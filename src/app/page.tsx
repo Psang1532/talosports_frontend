@@ -1,65 +1,69 @@
-import Image from "next/image";
+import Link from 'next/link'
+import Hero from '@/components/Hero'
+import StatsBand from '@/components/StatsBand'
+import MarketplaceSection from '@/components/MarketplaceSection'
+import AudienceStrip from '@/components/AudienceStrip'
+import WalletStrip from '@/components/WalletStrip'
+import SocialProof from '@/components/SocialProof'
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      <Hero />
+      <StatsBand />
+      <MarketplaceSection />
+      <AudienceStrip />
+
+      <section className="cta-split-upgrade" id="how">
+        <div className="cta-pane-upgrade dark">
+          <p className="cta-eye">How It Works</p>
+          <h2 className="cta-h">Create your role-specific profile and enter the exchange in minutes.</h2>
+          <p className="cta-p">
+            Choose whether you are joining as talent, an investor, or a club.
+            Complete verification, unlock deals, and transact through one shared market.
           </p>
+          <ul className="cta-feature-list">
+            <li>Verified onboarding tailored to each role.</li>
+            <li>Clear routing to sign in, register, and complete onboarding.</li>
+            <li>Unified access to sponsorships, investments, transfers, and payouts.</li>
+          </ul>
+          <div className="hero-actions">
+            <Link href="/login" className="btn btn-ghost">
+              Sign In
+            </Link>
+            <Link href="/register" className="btn btn-primary">
+              Start Registration
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="cta-pane-upgrade light">
+          <p className="cta-eye">Join By Role</p>
+          <h2 className="cta-h">Direct entry points for every side of the platform.</h2>
+          <p className="cta-p">
+            Users should not have to guess where to begin. The landing page exposes explicit role links for the three supported registration flows.
+          </p>
+          <ul className="cta-feature-list">
+            <li>Talent profiles for athletes and sports professionals.</li>
+            <li>Investor profiles for sponsors, scouts, and capital partners.</li>
+            <li>Club profiles for teams, academies, and federations.</li>
+          </ul>
+          <div className="hero-actions" style={{ justifyContent: 'flex-start' }}>
+            <Link href="/register?role=talent" className="btn btn-navy">
+              Register as Talent
+            </Link>
+            <Link href="/register?role=investor" className="btn btn-outline">
+              Register as Investor
+            </Link>
+            <Link href="/register?role=club" className="btn btn-outline">
+              Register as Club
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
-  );
+      </section>
+
+      <WalletStrip />
+      <SocialProof />
+    </>
+  )
 }
