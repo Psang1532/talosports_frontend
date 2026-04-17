@@ -1,7 +1,7 @@
 const badges = [
-  { icon: '💰', title: 'Investments & Sponsorships', desc: 'Live deal flow across 54 African nations' },
-  { icon: '👛', title: 'Athlete Wallet & Payouts',    desc: 'M-Pesa, mobile money & SWIFT — same day' },
-  { icon: '🎟️', title: 'Tickets, Merch & Memberships', desc: 'Fan economy built into every club profile' },
+  { title: 'Investments & Sponsorships', desc: 'Live deal flow across 54 African nations' },
+  { title: 'Athlete Wallet & Payouts',    desc: 'M-Pesa, mobile money & SWIFT — same day' },
+  { title: 'Tickets, Merch & Memberships', desc: 'Fan economy built into every club profile' },
 ]
 
 export default function AuthPanelLeft() {
@@ -16,7 +16,6 @@ export default function AuthPanelLeft() {
       <div className="auth-panel-badges">
         {badges.map((b) => (
           <div key={b.title} className="auth-badge">
-            <div className="auth-badge-icon">{b.icon}</div>
             <div className="auth-badge-txt">
               <strong>{b.title}</strong>
               {b.desc}
