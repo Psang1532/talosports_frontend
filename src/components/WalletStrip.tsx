@@ -41,13 +41,12 @@ export default function WalletStrip() {
           </p>
           <div className="wallet-features">
             {[
-              { icon: '💳', title: 'Multi-currency Wallet',         desc: 'Hold KES, NGN, GHS, ZAR, USD and more. Exchange rates updated in real time.' },
-              { icon: '📲', title: 'M-Pesa & Mobile Money Payouts', desc: 'Withdraw to M-Pesa, Airtel Money, MTN Mobile Money or your bank in minutes.' },
-              { icon: '📈', title: 'Revenue Streams Dashboard',     desc: 'Track sponsorship income, transfer fees, merchandise and fan revenue in one view.' },
-              { icon: '🔒', title: 'Escrow-Protected Deals',        desc: 'All deals are held in escrow until conditions are met. No more late payments.' },
+              { title: 'Multi-currency Wallet',         desc: 'Hold KES, NGN, GHS, ZAR, USD and more. Exchange rates updated in real time.' },
+              { title: 'M-Pesa & Mobile Money Payouts', desc: 'Withdraw to M-Pesa, Airtel Money, MTN Mobile Money or your bank in minutes.' },
+              { title: 'Revenue Streams Dashboard',     desc: 'Track sponsorship income, transfer fees, merchandise and fan revenue in one view.' },
+              { title: 'Escrow-Protected Deals',        desc: 'All deals are held in escrow until conditions are met. No more late payments.' },
             ].map((f) => (
               <div key={f.title} className="wallet-feat">
-                <div className="wallet-feat-icon">{f.icon}</div>
                 <div>
                   <div className="wallet-feat-title">{f.title}</div>
                   <div className="wallet-feat-desc">{f.desc}</div>

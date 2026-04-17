@@ -419,10 +419,10 @@ function RegisterPageInner() {
     router.push(`/onboarding?role=${role}`);
   }
 
-  const roles: { id: Role; icon: string; label: string }[] = [
-    { id: "talent", icon: "🏃", label: "Talent" },
-    { id: "investor", icon: "💼", label: "Investor" },
-    { id: "club", icon: "🏟️", label: "Club" },
+  const roles: { id: Role; label: string }[] = [
+    { id: "talent", label: "Talent" },
+    { id: "investor", label: "Investor" },
+    { id: "club", label: "Club" },
   ];
 
   return (
@@ -476,7 +476,6 @@ function RegisterPageInner() {
                           className={`role-btn${role === r.id ? " selected" : ""}`}
                           onClick={() => setRole(r.id)}
                         >
-                          <div className="role-icon">{r.icon}</div>
                           <div className="role-name">{r.label}</div>
                         </button>
                       ))}

@@ -48,9 +48,9 @@ export default function LoginPage() {
             <div className="divider"><span>or continue as</span></div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '0.7rem', marginBottom: '1.5rem' }}>
-              <Link href="/register?role=talent"   className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>🏃 Talent</Link>
-              <Link href="/register?role=investor" className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>💼 Investor</Link>
-              <Link href="/register?role=club"     className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>🏟️ Club</Link>
+              <Link href="/register?role=talent"   className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>Talent</Link>
+              <Link href="/register?role=investor" className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>Investor</Link>
+              <Link href="/register?role=club"     className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>Club</Link>
             </div>
 
             <p style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
