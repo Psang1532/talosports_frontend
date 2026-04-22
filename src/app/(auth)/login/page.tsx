@@ -38,27 +38,12 @@ export default function LoginPage() {
               <input id="password" type="password" placeholder="Enter your password" />
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
-              <Link href="/forgot-password" style={{ fontSize: '0.78rem', color: 'var(--gold)', fontWeight: 600, textDecoration: 'none' }}>
+              <a href="#" style={{ fontSize: '0.78rem', color: 'var(--gold)', fontWeight: 600, textDecoration: 'none' }}>
                 Forgot password?
-              </Link>
+              </a>
             </div>
 
             <button className="btn btn-navy btn-full">Sign In</button>
-
-            <div className="divider"><span>or continue as</span></div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '0.7rem', marginBottom: '1.5rem' }}>
-              <Link href="/register?role=talent"   className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>Talent</Link>
-              <Link href="/register?role=investor" className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>Investor</Link>
-              <Link href="/register?role=club"     className="btn btn-outline btn-full" style={{ padding: '0.7rem', fontSize: '0.65rem' }}>Club</Link>
-            </div>
-
-            <p style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              New to Talo?{' '}
-              <Link href="/register" style={{ color: 'var(--gold)', fontWeight: 600 }}>
-                Create your account →
-              </Link>
-            </p>
           </div>
         </div>
       </div>
