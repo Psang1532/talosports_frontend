@@ -13,7 +13,6 @@ export default function Home() {
       <StatsBand />
       <MarketplaceSection />
       <AudienceStrip />
-
       <section className="cta-split-upgrade" id="how">
         <div className="cta-pane-upgrade dark">
           <p className="cta-eye">How It Works</p>

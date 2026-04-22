@@ -2,29 +2,35 @@ import Link from "next/link";
 
 const audience = [
   {
-    title: "Athletes & Sports Professionals",
+    title: "Athletes",
     desc: "Build your verified profile, monetise your brand, and close sponsorships and transfers — all from your phone.",
     tags: ["Wallet", "Sponsorships", "Merch"],
   },
   {
-    title: "Investors & Scouts",
+    title: "Investors",
     desc: "Access a continent-wide deal flow — athlete equity, club rounds, infrastructure funds and diaspora pools.",
     tags: ["Equity", "Funds", "Analytics"],
   },
   {
-    title: "African Diaspora",
+    title: " Brands and Sponsors",
     desc: "Invest back home. Back the next generation of African sporting talent from anywhere in the world.",
     tags: ["Diaspora Funds", "Remit"],
   },
   {
-    title: "Clubs & Federations",
+    title: "Federations and Leagues",
     desc: "Scout at scale, manage transfers, raise institutional capital and run your fan economy inside one platform.",
     tags: ["Transfers", "Fundraising"],
   },
   {
-    title: "Fans & Fan Clubs",
+    title: "Fans",
     desc: "Buy tickets, join memberships, collect merchandise and participate in the ownership of your favourite clubs.",
     tags: ["Tickets", "Members", "Merch"],
+  },
+
+  {
+    title: "Diaspora",
+    desc: "Connect with your community, support local talent, and invest in the future of African sports.",
+    tags: ["Diaspora Funds", "Remit", "Fan Tokens"],
   },
 ];
 
@@ -34,7 +40,7 @@ export default function AudienceStrip() {
       <div className="inner" style={{ marginBottom: "2rem" }}>
         <p className="sec-label">Who It&apos;s For</p>
         <h2 className="sec-title">
-          Five pillars of the <em>ecosystem</em>.
+          Six pillars of the <em>ecosystem</em>.
         </h2>
       </div>
 
