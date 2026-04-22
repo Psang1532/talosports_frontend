@@ -17,10 +17,10 @@ function RegisterPageInner() {
     if (r && ['talent', 'investor', 'club'].includes(r)) setRole(r)
   }, [searchParams])
 
-  const roles: { id: Role; icon: string; label: string }[] = [
-    { id: 'talent',   icon: '🏃', label: 'Talent' },
-    { id: 'investor', icon: '💼', label: 'Investor' },
-    { id: 'club',     icon: '🏟️', label: 'Club' },
+  const roles: { id: Role; label: string }[] = [
+    { id: 'talent',   label: 'Talent' },
+    { id: 'investor', label: 'Investor' },
+    { id: 'club',     label: 'Club' },
   ]
 
   function handleSubmit() {
@@ -66,7 +66,6 @@ function RegisterPageInner() {
                   className={`role-btn${role === r.id ? ' selected' : ''}`}
                   onClick={() => setRole(r.id)}
                 >
-                  <div className="role-icon">{r.icon}</div>
                   <div className="role-name">{r.label}</div>
                 </button>
               ))}
@@ -165,9 +164,6 @@ function RegisterPageInner() {
 
             </div>
 
-            <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1.5rem' }}>
-              Your profile details will be completed in your dashboard after signup.
-            </p>
 
           </div>
         </div>
