@@ -38,9 +38,9 @@ export default function LoginPage() {
               <input id="password" type="password" placeholder="Enter your password" />
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
-              <a href="#" style={{ fontSize: '0.78rem', color: 'var(--gold)', fontWeight: 600, textDecoration: 'none' }}>
+              <Link href="/forgot-password" style={{ fontSize: '0.78rem', color: 'var(--gold)', fontWeight: 600, textDecoration: 'none' }}>
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <button className="btn btn-navy btn-full">Sign In</button>
