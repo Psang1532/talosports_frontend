@@ -9,6 +9,7 @@ export default function Navbar() {
   const pathname = usePathname()
 
   const isHome = pathname === '/'
+  const isMarketplace = pathname.startsWith('/marketplace')
 
   return (
     <>
@@ -19,7 +20,14 @@ export default function Navbar() {
           <li>
             <Link href="/" className={isHome ? 'nav-active' : ''}>Home</Link>
           </li>
-          <li><a href="/#marketplace">Marketplace</a></li>
+          <li>
+            <Link
+              href="/marketplace"
+              className={isMarketplace ? 'nav-active' : ''}
+            >
+              Marketplace
+            </Link>
+          </li>
           <li><a href="/#roles">Ecosystem</a></li>
           <li><a href="/#how">How It Works</a></li>
           <li>
@@ -47,12 +55,12 @@ export default function Navbar() {
       </nav>
 
       <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
-        <Link href="/"           onClick={() => setMenuOpen(false)}>Home</Link>
-        <a href="/#marketplace"  onClick={() => setMenuOpen(false)}>Marketplace</a>
-        <a href="/#roles"        onClick={() => setMenuOpen(false)}>Ecosystem</a>
-        <a href="/#how"          onClick={() => setMenuOpen(false)}>How It Works</a>
-        <Link href="/login"      onClick={() => setMenuOpen(false)}>Log In</Link>
-        <Link href="/register"   onClick={() => setMenuOpen(false)}>Join Free →</Link>
+        <Link href="/"            onClick={() => setMenuOpen(false)}>Home</Link>
+        <Link href="/marketplace" onClick={() => setMenuOpen(false)}>Marketplace</Link>
+        <a href="/#roles"         onClick={() => setMenuOpen(false)}>Ecosystem</a>
+        <a href="/#how"           onClick={() => setMenuOpen(false)}>How It Works</a>
+        <Link href="/login"       onClick={() => setMenuOpen(false)}>Log In</Link>
+        <Link href="/register"    onClick={() => setMenuOpen(false)}>Join Free →</Link>
       </div>
     </>
   )

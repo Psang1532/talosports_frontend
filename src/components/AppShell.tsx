@@ -10,6 +10,7 @@ const authRoutes = ['/login', '/register', '/onboarding']
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route))
+  const isMarketplace = pathname.startsWith('/marketplace')  // ← add this
 
   if (isAuthRoute) {
     return <main>{children}</main>
@@ -17,7 +18,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <TickerBar />
+      {!isMarketplace && <TickerBar />}  {/* ← only show on non-marketplace pages */}
       <Navbar />
       <main>{children}</main>
       <Footer />
