@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Hero from "@/components/Hero";
 import StatsBand from "@/components/StatsBand";
-import MarketplaceSection from "@/components/MarketplaceSection";
 import AudienceStrip from "@/components/AudienceStrip";
+import Summit from '@/components/Summit'
 import WalletStrip from "@/components/WalletStrip";
 import SocialProof from "@/components/SocialProof";
 
@@ -11,8 +11,8 @@ export default function Home() {
     <>
       <Hero />
       <StatsBand />
-      <MarketplaceSection />
       <AudienceStrip />
+      <Summit />
       <section className="cta-split-upgrade" id="how">
         <div className="cta-pane-upgrade dark">
           <p className="cta-eye">How It Works</p>
@@ -50,8 +50,7 @@ export default function Home() {
             Direct entry points for every side of the platform.
           </h2>
           <p className="cta-p">
-            Users should not have to guess where to begin. The landing page
-            exposes explicit role links for the three supported registration
+             Explicit role links for the three supported registration
             flows.
           </p>
           <ul className="cta-feature-list">

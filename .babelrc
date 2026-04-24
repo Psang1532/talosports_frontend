@@ -1,0 +1,5 @@
+{
+    "presets": ["next/babel"], // Use the Next.js preset for Babel
+    "plugins": ["macros"] // Include the macros plugin for handling CSS modules and other macros
+        
+}

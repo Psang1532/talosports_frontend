@@ -31,11 +31,6 @@ export default function Navbar() {
           <li><a href="/#roles">Ecosystem</a></li>
           <li><a href="/#how">How It Works</a></li>
           <li>
-            <Link href="/login" className={pathname === '/login' ? 'nav-active' : ''}>
-              Log In
-            </Link>
-          </li>
-          <li>
             <Link
               href="/register"
               className={`nav-cta${pathname === '/register' ? ' nav-active' : ''}`}
@@ -59,7 +54,6 @@ export default function Navbar() {
         <Link href="/marketplace" onClick={() => setMenuOpen(false)}>Marketplace</Link>
         <a href="/#roles"         onClick={() => setMenuOpen(false)}>Ecosystem</a>
         <a href="/#how"           onClick={() => setMenuOpen(false)}>How It Works</a>
-        <Link href="/login"       onClick={() => setMenuOpen(false)}>Log In</Link>
         <Link href="/register"    onClick={() => setMenuOpen(false)}>Join Free →</Link>
       </div>
     </>

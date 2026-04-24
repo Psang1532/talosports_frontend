@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALO — Athlete Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:       #C8922A;
+  --gold-light: #E0A93A;
+  --gold-dim:   rgba(200,146,42,0.12);
+  --navy:       #0D1F2D;
+  --navy-mid:   #122535;
+  --navy-light: #1a3347;
+  --cream:      #F5EDE0;
+  --cream-dark: #EDE4D3;
+  --text:       #1A2D3D;
+  --text-muted: #4A6070;
+  --green:      #27ae60;
+  --red:        #e74c3c;
+  --blue:       #2980b9;
+  --sidebar-w:  220px;
+  --top-h:      62px;
+  --radius:     6px;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f0ece6;
+  color: #1A2D3D;
+  font-size: 13px;
+  overflow-x: hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: #fff;
+  border-right: 1px solid #e8e0d5;
+  display: flex; flex-direction: column;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  height: var(--top-h);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 18px;
+  border-bottom: 1px solid #e8e0d5;
+  flex-shrink: 0;
+}
+.brand-logo {
+  font-weight: 900; font-size: 1.15rem; letter-spacing: 0.18em; color: var(--gold);
+}
+.brand-pipe { width: 1px; height: 18px; background: #ddd5c8; }
+.brand-sub  { font-size: 0.55rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #8a9aaa; }
+
+.nav-section {
+  padding: 18px 14px 4px;
+  font-size: 0.52rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: #a0aab4;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; margin: 1px 8px;
+  border-radius: var(--radius); cursor: pointer;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+  color: #6b7f8e;
+  transition: all 0.16s; text-decoration: none;
+  position: relative;
+}
+.nav-item:hover { background: #f5efe8; color: #1A2D3D; }
+.nav-item.active {
+  background: var(--gold-dim); color: var(--gold);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: -8px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 18px; background: var(--gold); border-radius: 0 3px 3px 0;
+}
+.nav-dot {
+  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+  background: #c5cdd4;
+}
+.nav-item.active .nav-dot { background: var(--gold); }
+.nav-count {
+  margin-left: auto; font-size: 0.58rem; font-weight: 700;
+  background: rgba(200,146,42,0.15); color: var(--gold);
+  padding: 1px 6px; border-radius: 8px;
+}
+.nav-count.alert { background: rgba(231,76,60,0.12); color: var(--red); }
+
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid #e8e0d5;
+  padding: 12px 10px;
+}
+.athlete-mini {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 8px; border-radius: var(--radius);
+  cursor: pointer; transition: background 0.16s;
+}
+.athlete-mini:hover { background: #f5efe8; }
+.athlete-initials {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.65rem; color: var(--navy);
+}
+.athlete-mini-name { font-size: 0.72rem; font-weight: 700; color: #1A2D3D; }
+.athlete-mini-role { font-size: 0.58rem; color: #7a8a96; }
+.mini-caret { margin-left: auto; font-size: 0.7rem; color: #b0bcc5; }
+
+/* ── TOPBAR ── */
+.topbar {
+  position: fixed; top: 0; left: var(--sidebar-w); right: 0;
+  height: var(--top-h); z-index: 90;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid #e4ddd4;
+  display: flex; align-items: center;
+  padding: 0 28px; gap: 16px;
+}
+.topbar-greeting { font-size: 0.82rem; font-weight: 700; color: #1A2D3D; }
+.topbar-greeting span { color: var(--gold); }
+.topbar-date { font-size: 0.62rem; color: #8a9aaa; margin-left: 2px; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.status-pill.verified {
+  background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.2); color: var(--green);
+}
+.status-pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+.topbar-btn {
+  width: 32px; height: 32px; border-radius: var(--radius);
+  background: #f0ece6; border: 1px solid #ddd5c8;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #6b7f8e; font-size: 0.78rem;
+  transition: all 0.15s; position: relative;
+}
+.topbar-btn:hover { background: #e6dfd7; color: #1A2D3D; }
+.topbar-btn-dot {
+  position: absolute; top: 4px; right: 4px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); border: 2px solid #fff;
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  padding-top: var(--top-h);
+  min-height: 100vh;
+}
+.content { padding: 26px 28px; }
+
+/* ── HERO PROFILE BAND ── */
+.profile-band {
+  background: var(--navy);
+  border: 1px solid rgba(13,31,45,0.12);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  position: relative;
+}
+.profile-band-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(120deg, rgba(200,146,42,0.06) 0%, transparent 60%);
+}
+.profile-band-bg::after {
+  content: 'WC';
+  position: absolute; right: -20px; top: -30px;
+  font-weight: 900; font-size: 9rem; letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.02); pointer-events: none;
+}
+.profile-inner {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 24px;
+  padding: 24px 28px;
+}
+.profile-avatar-wrap { position: relative; flex-shrink: 0; }
+.profile-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1.6rem; color: var(--navy);
+  border: 3px solid rgba(200,146,42,0.3);
+}
+.profile-verified-ring {
+  position: absolute; inset: -4px; border-radius: 50%;
+  border: 2px solid var(--gold); opacity: 0.4;
+}
+
+.profile-info { flex: 1; }
+.profile-name {
+  font-weight: 900; font-size: 1.4rem; letter-spacing: -0.02em; color: #fff;
+  line-height: 1.1; margin-bottom: 3px;
+}
+.profile-sport {
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.38); margin-bottom: 10px;
+}
+.profile-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.profile-tag {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.55);
+}
+.profile-tag.gold { border-color: rgba(200,146,42,0.35); color: var(--gold); }
+
+.profile-stats {
+  display: flex; gap: 0;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  padding-left: 24px;
+}
+.pstat {
+  padding: 0 20px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.pstat:last-child { border-right: none; }
+.pstat-val {
+  font-size: 1.3rem; font-weight: 900; color: #fff; letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.pstat-val.gold { color: var(--gold); }
+.pstat-lbl {
+  font-size: 0.55rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.28); margin-top: 3px;
+}
+
+.profile-actions { display: flex; gap: 8px; flex-direction: column; align-items: flex-end; padding-left: 24px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: var(--radius);
+  font-family: 'Roboto', sans-serif; font-weight: 700;
+  font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; border: none; transition: all 0.18s; white-space: nowrap;
+}
+.btn-primary { background: var(--gold); color: var(--navy); }
+.btn-primary:hover { background: var(--gold-light); }
+.btn-ghost {
+  background: transparent; color: #4A6070;
+  border: 1px solid #c8bfb5;
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+.btn-sm { padding: 5px 12px; font-size: 0.62rem; }
+
+/* ── KPI ROW ── */
+.kpi-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; margin-bottom: 20px;
+}
+.kpi {
+  background: #fff;
+  border: 1px solid #e4ddd4;
+  border-radius: 10px; padding: 18px 20px;
+  transition: border-color 0.2s;
+}
+.kpi:hover { border-color: rgba(200,146,42,0.35); }
+.kpi-label {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #8a9aaa; margin-bottom: 8px;
+}
+.kpi-val {
+  font-size: 1.65rem; font-weight: 900; color: #1A2D3D; letter-spacing: -0.03em;
+  line-height: 1;
+}
+.kpi-val .accent { color: var(--gold); }
+.kpi-sub {
+  font-size: 0.62rem; color: #8a9aaa; margin-top: 6px;
+  display: flex; align-items: center; gap: 4px;
+}
+.up   { color: var(--green); font-weight: 700; }
+.down { color: var(--red);   font-weight: 700; }
+
+/* ── GRID ── */
+.grid-2 {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+}
+.grid-3 {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;
+}
+.grid-main {
+  display: grid; grid-template-columns: 1fr 320px; gap: 16px; margin-bottom: 16px;
+}
+
+/* ── PANEL ── */
+.panel {
+  background: #fff;
+  border: 1px solid #e4ddd4;
+  border-radius: 10px; overflow: hidden;
+}
+.panel-head {
+  padding: 14px 20px;
+  border-bottom: 1px solid #ede6dd;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.03em; color: #1A2D3D;
+}
+.panel-sub {
+  font-size: 0.58rem; color: #8a9aaa; margin-top: 1px;
+}
+.panel-link {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gold); cursor: pointer; opacity: 0.75; transition: opacity 0.15s;
+}
+.panel-link:hover { opacity: 1; }
+
+/* ── WALLET CARD ── */
+.wallet-card {
+  background: linear-gradient(130deg, #0f2336 0%, #1a3347 55%, #0d1e2c 100%);
+  border-radius: 10px; padding: 22px;
+  border: 1px solid rgba(200,146,42,0.18);
+  position: relative; overflow: hidden;
+}
+.wallet-card::before {
+  content: '';
+  position: absolute; top: -50px; right: -50px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,146,42,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.wallet-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.wallet-logo { font-weight: 900; font-size: 0.95rem; letter-spacing: 0.18em; color: var(--gold); }
+.wallet-chip { width: 30px; height: 22px; border-radius: 3px; background: linear-gradient(135deg, var(--gold-light), var(--gold)); opacity: 0.5; }
+.wallet-bal-lbl {
+  font-size: 0.55rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35); margin-bottom: 4px;
+}
+.wallet-bal-num {
+  font-size: 2rem; font-weight: 900; color: #fff; letter-spacing: -0.03em; line-height: 1;
+}
+.wallet-bal-sub { font-size: 0.62rem; color: rgba(255,255,255,0.3); margin-top: 3px; margin-bottom: 16px; }
+.wallet-txns { display: flex; flex-direction: column; gap: 6px; }
+.txn {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 10px; background: rgba(255,255,255,0.04); border-radius: 5px;
+}
+.txn-label { font-size: 0.68rem; color: rgba(255,255,255,0.55); }
+.txn-amt   { font-size: 0.72rem; font-weight: 700; }
+.txn-in    { color: var(--green); }
+.txn-out   { color: rgba(255,255,255,0.3); }
+.wallet-footer {
+  display: flex; gap: 8px; margin-top: 16px;
+}
+.wallet-footer .btn { flex: 1; justify-content: center; font-size: 0.6rem; }
+
+/* ── EARNINGS CHART ── */
+.chart-area { padding: 20px; }
+.chart-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; }
+.chart-total-lbl { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #8a9aaa; }
+.chart-total-val { font-size: 1.1rem; font-weight: 900; color: #1A2D3D; }
+
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 90px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bar {
+  width: 100%; border-radius: 3px 3px 0 0;
+  background: rgba(200,146,42,0.2);
+  transition: background 0.2s;
+  cursor: pointer; position: relative;
+}
+.bar:hover { background: var(--gold); }
+.bar.current { background: var(--gold); }
+.bar-lbl { font-size: 0.5rem; color: #8a9aaa; font-weight: 600; }
+
+/* ── DEALS LIST ── */
+.deal-list { padding: 4px 0; }
+.deal-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer; transition: background 0.14s;
+}
+.deal-item:last-child { border-bottom: none; }
+.deal-item:hover { background: rgba(255,255,255,0.025); }
+.deal-line { width: 3px; height: 32px; border-radius: 3px; flex-shrink: 0; }
+.deal-info { flex: 1; min-width: 0; }
+.deal-title { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+.deal-meta  { font-size: 0.6rem; color: rgba(255,255,255,0.3); }
+.deal-amount { font-size: 0.78rem; font-weight: 800; color: #fff; }
+.deal-amount-lbl { font-size: 0.55rem; color: rgba(255,255,255,0.28); text-align: right; }
+
+/* ── BADGE ── */
+.badge {
+  font-size: 0.54rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 3px; display: inline-block;
+}
+.badge-green  { background: rgba(39,174,96,0.15);  color: var(--green); }
+.badge-gold   { background: rgba(200,146,42,0.15); color: var(--gold); }
+.badge-blue   { background: rgba(41,128,185,0.15); color: #5dade2; }
+.badge-red    { background: rgba(231,76,60,0.15);  color: var(--red); }
+.badge-grey   { background: #f0ece6; color: #7a8a96; }
+
+/* ── BIDS TABLE ── */
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  padding: 9px 18px; text-align: left;
+  font-size: 0.56rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #a0aab4; border-bottom: 1px solid #ede6dd;
+  white-space: nowrap;
+}
+tbody td {
+  padding: 11px 18px; font-size: 0.7rem; color: rgba(255,255,255,0.6);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr { cursor: pointer; transition: background 0.14s; }
+tbody tr:hover td { background: rgba(255,255,255,0.025); color: rgba(255,255,255,0.85); }
+.td-bold { font-weight: 700; color: #1A2D3D; }
+.td-action { text-align: right; }
+.td-action-btns { display: flex; gap: 6px; justify-content: flex-end; }
+
+/* ── PERFORMANCE STATS ── */
+.perf-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 20px;
+}
+.perf-item {
+  background: #faf7f3; border-radius: 6px; padding: 12px 14px;
+  border: 1px solid #e8e0d5;
+}
+.perf-lbl { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #8a9aaa; margin-bottom: 4px; }
+.perf-val { font-size: 1rem; font-weight: 900; color: #1A2D3D; }
+.perf-note{ font-size: 0.58rem; color: #8a9aaa; margin-top: 2px; }
+
+/* ── PROGRESS BAR ── */
+.prog-wrap { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.prog-item {}
+.prog-head { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.prog-lbl { font-size: 0.65rem; font-weight: 600; color: #4A6070; }
+.prog-val { font-size: 0.65rem; font-weight: 700; color: var(--gold); }
+.prog-bar { height: 3px; background: #e8e0d5; border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 3px; background: var(--gold); transition: width 1.2s cubic-bezier(.16,1,.3,1); }
+.prog-fill.blue  { background: #2980b9; }
+.prog-fill.green { background: var(--green); }
+.prog-fill.grey  { background: #c0c8cf; }
+
+/* ── NOTIFICATIONS ── */
+.notif-list { padding: 4px 0; }
+.notif-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 11px 18px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer; transition: background 0.14s;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: rgba(255,255,255,0.025); }
+.notif-accent { width: 2px; height: 100%; min-height: 28px; border-radius: 2px; flex-shrink: 0; margin-top: 3px; }
+.notif-body { flex: 1; }
+.notif-text { font-size: 0.7rem; color: #4A6070; line-height: 1.4; }
+.notif-text strong { color: #1A2D3D; }
+.notif-time { font-size: 0.58rem; color: #a0aab4; margin-top: 2px; }
+.notif-unread { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 5px; }
+
+/* ── PROFILE COMPLETENESS ── */
+.complete-ring {
+  display: flex; justify-content: center; align-items: center;
+  padding: 20px 20px 8px;
+}
+.ring-wrap { position: relative; width: 100px; height: 100px; }
+.ring-svg { transform: rotate(-90deg); }
+.ring-bg   { fill: none; stroke: #ede6dd; stroke-width: 8; }
+.ring-fill { fill: none; stroke: var(--gold); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 57; transition: stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1); }
+.ring-label {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.ring-pct { font-size: 1.2rem; font-weight: 900; color: #1A2D3D; line-height: 1; }
+.ring-lbl { font-size: 0.5rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #8a9aaa; margin-top: 2px; }
+
+.complete-items { padding: 0 20px 16px; display: flex; flex-direction: column; gap: 8px; }
+.complete-item { display: flex; align-items: center; gap: 8px; }
+.check-mark { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; }
+.check-done { background: rgba(39,174,96,0.2); color: var(--green); }
+.check-todo { background: #ede6dd; color: #a0aab4; }
+.complete-lbl { font-size: 0.65rem; color: #8a9aaa; }
+.complete-lbl.done { color: #1A2D3D; }
+
+/* ── SCROLL ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(200,146,42,0.2); border-radius: 4px; }
+
+/* ── LOAD ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.panel, .kpi, .profile-band, .wallet-card {
+  animation: fadeUp 0.4s ease both;
+}
+.kpi:nth-child(1) { animation-delay: 0.05s; }
+.kpi:nth-child(2) { animation-delay: 0.1s; }
+.kpi:nth-child(3) { animation-delay: 0.15s; }
+.kpi:nth-child(4) { animation-delay: 0.2s; }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">TALO</div>
+    <div class="brand-pipe"></div>
+    <div class="brand-sub">Athlete</div>
+  </div>
+
+  <div class="nav-section">My Exchange</div>
+  <a class="nav-item active" href="#">
+    <div class="nav-dot"></div> Overview
+  </a>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> My Wallet
+  </a>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> Earnings
+  </a>
+
+  <div class="nav-section">Deals</div>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> Active Bids
+    <span class="nav-count">4</span>
+  </a>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> Sponsorships
+  </a>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> Transfers
+  </a>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> Merchandise
+  </a>
+
+  <div class="nav-section">Profile</div>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> My Profile
+  </a>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> Media & Portfolio
+  </a>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> Notifications
+    <span class="nav-count alert">3</span>
+  </a>
+
+  <div class="nav-section">Account</div>
+  <a class="nav-item" href="#">
+    <div class="nav-dot"></div> Settings
+  </a>
+
+  <div class="sidebar-bottom">
+    <div class="athlete-mini">
+      <div class="athlete-initials">WC</div>
+      <div>
+        <div class="athlete-mini-name">Wanjiru Chepkemoi</div>
+        <div class="athlete-mini-role">Athletics · Kenya</div>
+      </div>
+      <div class="mini-caret">▾</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div>
+    <div class="topbar-greeting">Good morning, <span>Wanjiru</span></div>
+    <div class="topbar-date">Tuesday, 22 April 2026</div>
+  </div>
+  <div class="topbar-right">
+    <div class="status-pill verified">
+      <div class="status-pill-dot"></div>
+      Verified Athlete
+    </div>
+    <div class="topbar-btn">
+      &#9993;
+      <div class="topbar-btn-dot"></div>
+    </div>
+    <div class="topbar-btn">&#9881;</div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+<div class="content">
+
+  <!-- PROFILE BAND -->
+  <div class="profile-band">
+    <div class="profile-band-bg"></div>
+    <div class="profile-inner">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar">WC</div>
+        <div class="profile-verified-ring"></div>
+      </div>
+
+      <div class="profile-info">
+        <div class="profile-name">Wanjiru Chepkemoi</div>
+        <div class="profile-sport">Athletics · Long Distance · Kenya</div>
+        <div class="profile-tags">
+          <span class="profile-tag gold">Verified</span>
+          <span class="profile-tag">2× National Champion</span>
+          <span class="profile-tag">Free Agent</span>
+          <span class="profile-tag">Sponsorship Open</span>
+        </div>
+      </div>
+
+      <div class="profile-stats">
+        <div class="pstat">
+          <div class="pstat-val gold">KES 6.2M</div>
+          <div class="pstat-lbl">Asking / yr</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-val">3</div>
+          <div class="pstat-lbl">Active Bids</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-val">284K</div>
+          <div class="pstat-lbl">Wallet (KES)</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-val">92%</div>
+          <div class="pstat-lbl">Profile Score</div>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="btn btn-primary">Edit Listing</button>
+        <button class="btn btn-ghost btn-sm">Share Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Wallet Balance</div>
+      <div class="kpi-val"><span class="accent">KES</span> 284,500</div>
+      <div class="kpi-sub"><span class="up">▲ 18%</span> vs last month</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Earnings This Year</div>
+      <div class="kpi-val"><span class="accent">KES</span> 8.1M</div>
+      <div class="kpi-sub"><span class="up">▲ 34%</span> vs last year</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Open Bids</div>
+      <div class="kpi-val"><span class="accent">4</span></div>
+      <div class="kpi-sub">3 brands · 1 investor</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Profile Views (7d)</div>
+      <div class="kpi-val">1,<span class="accent">240</span></div>
+      <div class="kpi-sub"><span class="up">▲ 22%</span> week-on-week</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: Wallet + Earnings Chart -->
+  <div class="grid-main" style="margin-bottom:0;">
+
+    <!-- LEFT: Earnings Chart + Deals -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <!-- Earnings bar chart -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Earnings Breakdown</div>
+            <div class="panel-sub">Last 6 months — all revenue streams</div>
+          </div>
+          <span class="panel-link">Full Report</span>
+        </div>
+        <div class="chart-area">
+          <div class="chart-header">
+            <div>
+              <div class="chart-total-lbl">Total This Period</div>
+              <div class="chart-total-val">KES 4.4M</div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:center;">
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.58rem;color:#8a9aaa;">
+                <div style="width:8px;height:8px;border-radius:2px;background:var(--gold);"></div> Sponsorship
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.58rem;color:#8a9aaa;">
+                <div style="width:8px;height:8px;border-radius:2px;background:#2980b9;"></div> Merch
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:0.58rem;color:#8a9aaa;">
+                <div style="width:8px;height:8px;border-radius:2px;background:var(--green);"></div> Transfer
+              </div>
+            </div>
+          </div>
+          <div class="bar-chart">
+            <div class="bar-col">
+              <div class="bar" style="height:42px;" title="Nov — KES 547K"></div>
+              <div class="bar-lbl">Nov</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:55px;" title="Dec — KES 715K"></div>
+              <div class="bar-lbl">Dec</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:38px;" title="Jan — KES 494K"></div>
+              <div class="bar-lbl">Jan</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:68px;" title="Feb — KES 884K"></div>
+              <div class="bar-lbl">Feb</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:74px;" title="Mar — KES 962K"></div>
+              <div class="bar-lbl">Mar</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar current" style="height:85px;" title="Apr — KES 1.1M"></div>
+              <div class="bar-lbl" style="color:var(--gold);">Apr</div>
+            </div>
+          </div>
+
+          <!-- Revenue stream breakdown -->
+          <div style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div style="background:#fef9f2;border:1px solid rgba(200,146,42,0.2);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#8a9aaa;margin-bottom:4px;">Sponsorship</div>
+              <div style="font-size:0.95rem;font-weight:900;color:var(--gold);">KES 3.1M</div>
+              <div style="font-size:0.58rem;color:#8a9aaa;">Safaricom · Q1</div>
+            </div>
+            <div style="background:#f2f8fd;border:1px solid rgba(41,128,185,0.2);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#8a9aaa;margin-bottom:4px;">Merch Sales</div>
+              <div style="font-size:0.95rem;font-weight:900;color:#5dade2;">KES 882K</div>
+              <div style="font-size:0.58rem;color:#8a9aaa;">Signature Collection</div>
+            </div>
+            <div style="background:#f2fbf6;border:1px solid rgba(39,174,96,0.2);border-radius:6px;padding:10px 12px;">
+              <div style="font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#8a9aaa;margin-bottom:4px;">Transfer Fee</div>
+              <div style="font-size:0.95rem;font-weight:900;color:var(--green);">KES 441K</div>
+              <div style="font-size:0.58rem;color:#8a9aaa;">Share · Jan 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Bids table -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Active Bids</div>
+            <div class="panel-sub">Brands and investors currently bidding on your profile</div>
+          </div>
+          <span class="panel-link">View All</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Bidder</th>
+              <th>Type</th>
+              <th>Offer</th>
+              <th>Duration</th>
+              <th>Status</th>
+              <th>Expires</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-bold">Safaricom Ltd</td>
+              <td><span class="badge badge-blue">Sponsorship</span></td>
+              <td class="td-bold" style="color:var(--gold);">KES 6.2M/yr</td>
+              <td>2 years</td>
+              <td><span class="badge badge-gold">Negotiating</span></td>
+              <td>28 Apr</td>
+              <td class="td-action">
+                <div class="td-action-btns">
+                  <button class="btn btn-primary btn-sm">Accept</button>
+                  <button class="btn btn-ghost btn-sm">Counter</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-bold">Nike Africa</td>
+              <td><span class="badge badge-blue">Endorsement</span></td>
+              <td class="td-bold" style="color:var(--gold);">KES 4.2M/yr</td>
+              <td>1 year</td>
+              <td><span class="badge badge-green">New Bid</span></td>
+              <td>2 May</td>
+              <td class="td-action">
+                <div class="td-action-btns">
+                  <button class="btn btn-primary btn-sm">Accept</button>
+                  <button class="btn btn-ghost btn-sm">Counter</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-bold">East Africa Sports Trust</td>
+              <td><span class="badge badge-gold">Investment</span></td>
+              <td class="td-bold" style="color:var(--gold);">KES 1.95M</td>
+              <td>Equity share</td>
+              <td><span class="badge badge-green">New Bid</span></td>
+              <td>5 May</td>
+              <td class="td-action">
+                <div class="td-action-btns">
+                  <button class="btn btn-primary btn-sm">Accept</button>
+                  <button class="btn btn-ghost btn-sm">Decline</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-bold">Athletics Kenya Elite</td>
+              <td><span class="badge badge-grey">Transfer</span></td>
+              <td class="td-bold" style="color:var(--gold);">KES 1.1M</td>
+              <td>6 months</td>
+              <td><span class="badge badge-gold">Under Review</span></td>
+              <td>10 May</td>
+              <td class="td-action">
+                <div class="td-action-btns">
+                  <button class="btn btn-ghost btn-sm">Review</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Wallet + Profile + Notifications -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <!-- Wallet card -->
+      <div class="wallet-card">
+        <div class="wallet-top">
+          <div class="wallet-logo">TALO</div>
+          <div class="wallet-chip"></div>
+        </div>
+        <div class="wallet-bal-lbl">Athlete Wallet</div>
+        <div class="wallet-bal-num">KES 284,500</div>
+        <div class="wallet-bal-sub">M-Pesa · Updated live</div>
+        <div class="wallet-txns">
+          <div class="txn">
+            <span class="txn-label">Safaricom Sponsorship Q1</span>
+            <span class="txn-amt txn-in">+KES 120,000</span>
+          </div>
+          <div class="txn">
+            <span class="txn-label">Merch sales — April</span>
+            <span class="txn-amt txn-in">+KES 48,200</span>
+          </div>
+          <div class="txn">
+            <span class="txn-label">Transfer fee share</span>
+            <span class="txn-amt txn-in">+KES 116,300</span>
+          </div>
+          <div class="txn">
+            <span class="txn-label">Platform fee 2.5%</span>
+            <span class="txn-amt txn-out">−KES 7,115</span>
+          </div>
+        </div>
+        <div class="wallet-footer">
+          <button class="btn btn-primary">Withdraw</button>
+          <button class="btn btn-ghost">History</button>
+        </div>
+      </div>
+
+      <!-- Profile completeness -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Profile Completeness</div>
+          <span class="panel-link">Complete</span>
+        </div>
+        <div class="complete-ring">
+          <div class="ring-wrap">
+            <svg class="ring-svg" width="100" height="100" viewBox="0 0 100 100">
+              <circle class="ring-bg"   cx="50" cy="50" r="45"/>
+              <circle class="ring-fill" cx="50" cy="50" r="45" id="ringFill"/>
+            </svg>
+            <div class="ring-label">
+              <div class="ring-pct">80%</div>
+              <div class="ring-lbl">Complete</div>
+            </div>
+          </div>
+        </div>
+        <div class="complete-items">
+          <div class="complete-item">
+            <div class="check-mark check-done">✓</div>
+            <div class="complete-lbl done">Identity verified</div>
+          </div>
+          <div class="complete-item">
+            <div class="check-mark check-done">✓</div>
+            <div class="complete-lbl done">Wallet connected</div>
+          </div>
+          <div class="complete-item">
+            <div class="check-mark check-done">✓</div>
+            <div class="complete-lbl done">Sport credentials uploaded</div>
+          </div>
+          <div class="complete-item">
+            <div class="check-mark check-done">✓</div>
+            <div class="complete-lbl done">Sponsorship listing live</div>
+          </div>
+          <div class="complete-item">
+            <div class="check-mark check-todo">○</div>
+            <div class="complete-lbl">Add highlight reel video</div>
+          </div>
+          <div class="complete-item">
+            <div class="check-mark check-todo">○</div>
+            <div class="complete-lbl">Link social profiles</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Notifications</div>
+          <span class="panel-link">Mark all read</span>
+        </div>
+        <div class="notif-list">
+          <div class="notif-item">
+            <div class="notif-accent" style="background:var(--green);"></div>
+            <div class="notif-body">
+              <div class="notif-text"><strong>Nike Africa</strong> placed a new bid of KES 4.2M/yr on your sponsorship listing</div>
+              <div class="notif-time">12 min ago</div>
+            </div>
+            <div class="notif-unread"></div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-accent" style="background:var(--gold);"></div>
+            <div class="notif-body">
+              <div class="notif-text">Safaricom bid updated — counter-offer of <strong>KES 6.2M/yr</strong> expires in 6 days</div>
+              <div class="notif-time">1 hr ago</div>
+            </div>
+            <div class="notif-unread"></div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-accent" style="background:var(--blue);"></div>
+            <div class="notif-body">
+              <div class="notif-text">KES 120,000 payout received via <strong>M-Pesa</strong> from Q1 deal</div>
+              <div class="notif-time">3 hrs ago</div>
+            </div>
+            <div class="notif-unread"></div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-accent" style="background:rgba(255,255,255,0.1);"></div>
+            <div class="notif-body">
+              <div class="notif-text">Your profile was viewed <strong>240 times</strong> this week — up 22%</div>
+              <div class="notif-time">Yesterday</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ROW 2: Performance + Revenue Sources -->
+  <div class="grid-2" style="margin-top:16px;">
+
+    <!-- Performance stats -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Performance Stats</div>
+          <div class="panel-sub">Publicly visible on your exchange profile</div>
+        </div>
+        <button class="btn btn-ghost btn-sm">Update</button>
+      </div>
+      <div class="perf-grid">
+        <div class="perf-item">
+          <div class="perf-lbl">Marathon PB</div>
+          <div class="perf-val">2:04:32</div>
+          <div class="perf-note">World Top 50 ranking</div>
+        </div>
+        <div class="perf-item">
+          <div class="perf-lbl">10K PB</div>
+          <div class="perf-val">29:48</div>
+          <div class="perf-note">National record holder</div>
+        </div>
+        <div class="perf-item">
+          <div class="perf-lbl">Half Marathon PB</div>
+          <div class="perf-val">1:04:12</div>
+          <div class="perf-note">Course record · Nairobi</div>
+        </div>
+        <div class="perf-item">
+          <div class="perf-lbl">Races Won (2026)</div>
+          <div class="perf-val">4 / 5</div>
+          <div class="perf-note">80% win rate this season</div>
+        </div>
+        <div class="perf-item">
+          <div class="perf-lbl">World Ranking</div>
+          <div class="perf-val">#38</div>
+          <div class="perf-note">Athletics Kenya Elite</div>
+        </div>
+        <div class="perf-item">
+          <div class="perf-lbl">Career Titles</div>
+          <div class="perf-val">12</div>
+          <div class="perf-note">2× National Champion</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue sources + reach -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Revenue Sources</div>
+          <div class="panel-sub">Lifetime earnings by category</div>
+        </div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-item">
+          <div class="prog-head">
+            <span class="prog-lbl">Sponsorships & Endorsements</span>
+            <span class="prog-val">68%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:68%;"></div></div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-head">
+            <span class="prog-lbl">Transfer & Appearance Fees</span>
+            <span class="prog-val">18%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill blue" style="width:18%;"></div></div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-head">
+            <span class="prog-lbl">Merchandise Sales</span>
+            <span class="prog-val">10%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill green" style="width:10%;"></div></div>
+        </div>
+        <div class="prog-item">
+          <div class="prog-head">
+            <span class="prog-lbl">Fan Memberships</span>
+            <span class="prog-val">4%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:4%;background:#c0c8cf;"></div></div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid #ede6dd;padding:14px 20px;">
+        <div style="font-size:0.58rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#8a9aaa;margin-bottom:10px;">Audience Reach</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div style="text-align:center;background:#faf7f3;border:1px solid #e8e0d5;border-radius:5px;padding:10px 6px;">
+            <div style="font-size:0.95rem;font-weight:900;color:#1A2D3D;">14.2K</div>
+            <div style="font-size:0.55rem;color:#8a9aaa;margin-top:2px;text-transform:uppercase;letter-spacing:0.08em;">Instagram</div>
+          </div>
+          <div style="text-align:center;background:#faf7f3;border:1px solid #e8e0d5;border-radius:5px;padding:10px 6px;">
+            <div style="font-size:0.95rem;font-weight:900;color:#1A2D3D;">6.8K</div>
+            <div style="font-size:0.55rem;color:#8a9aaa;margin-top:2px;text-transform:uppercase;letter-spacing:0.08em;">X / Twitter</div>
+          </div>
+          <div style="text-align:center;background:#faf7f3;border:1px solid #e8e0d5;border-radius:5px;padding:10px 6px;">
+            <div style="font-size:0.95rem;font-weight:900;color:#1A2D3D;">3.1K</div>
+            <div style="font-size:0.55rem;color:#8a9aaa;margin-top:2px;text-transform:uppercase;letter-spacing:0.08em;">TALO Profile</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+  // Nav active state
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault()
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+      item.classList.add('active')
+    })
+  })
+
+  // Bar chart hover tooltip
+  document.querySelectorAll('.bar').forEach(bar => {
+    bar.addEventListener('mouseenter', () => bar.style.opacity = '1')
+    bar.addEventListener('mouseleave', () => bar.style.opacity = '')
+  })
+
+  // Animate progress bars
+  document.querySelectorAll('.prog-fill').forEach(fill => {
+    const target = fill.style.width
+    fill.style.width = '0'
+    setTimeout(() => { fill.style.width = target }, 400)
+  })
+
+  // Ring animation
+  const ring = document.getElementById('ringFill')
+  if (ring) {
+    ring.style.strokeDashoffset = '283'
+    setTimeout(() => {
+      ring.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1)'
+      ring.style.strokeDashoffset = '57'
+    }, 300)
+  }
+
+  // Bid table accept buttons
+  document.querySelectorAll('.td-action-btns').forEach(wrap => {
+    const accept = wrap.querySelector('.btn-primary')
+    if (accept) {
+      accept.addEventListener('click', () => {
+        const row = accept.closest('tr')
+        const statusCell = row.querySelector('.badge')
+        if (statusCell) {
+          statusCell.className = 'badge badge-green'
+          statusCell.textContent = 'Accepted'
+        }
+        wrap.innerHTML = '<span style="font-size:0.65rem;color:var(--green);font-weight:700;">Deal Accepted</span>'
+      })
+    }
+  })
+</script>
+</body>
+</html>

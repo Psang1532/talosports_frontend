@@ -292,13 +292,54 @@ nav {
 .wallet-feat-desc { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.55; }
 
 /* ── AUDIENCE STRIP ── */
-.audience-strip { background: var(--cream-dark); padding: 6rem 3rem; }
-.audience-grid { max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5px; background: rgba(0,0,0,0.08); }
-.aud-card { background: var(--cream); padding: 2.5rem 2rem; border-top: 3px solid transparent; transition: border-color 0.2s, background 0.2s; }
-.aud-card:hover { background: #fff; border-top-color: var(--gold); }
+.audience-strip {
+  background: var(--cream-dark);
+  padding: 6rem 0; /* remove side padding so it can stretch */
+}
+
+/* FIXED GRID */
+.audience-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(260px, 1fr);
+
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+
+  gap: 1.5px;
+  background: rgba(0,0,0,0.08);
+
+  padding: 0 3rem; /* move padding here  */
+}
+
+/* hide scrollbar */
+.audience-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* cards */
+.aud-card {
+  background: var(--cream);
+  padding: 2.5rem 2rem;
+
+  border-top: 3px solid transparent;
+
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+
+  scroll-snap-align: start;
+}
+
+.aud-card:hover {
+  background: #fff;
+  border-top-color: var(--gold);
+  transform: translateY(-4px);
+}
+
 .aud-icon { font-size: 2rem; margin-bottom: 0.9rem; }
 .aud-title { font-weight: 800; font-size: 1.05rem; color: var(--text); margin-bottom: 0.6rem; }
 .aud-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.2rem; }
+
+/* ( removed tags */
 .aud-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
 /* ── CTA SPLIT UPGRADE ── */

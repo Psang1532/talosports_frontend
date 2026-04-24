@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALO Admin — Exchange Control Centre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:        #C8922A;
+  --gold-light:  #E0A93A;
+  --gold-dim:    rgba(200,146,42,0.1);
+  --navy:        #0D1F2D;
+  --text:        #1A2D3D;
+  --text-muted:  #5a7080;
+  --text-faint:  #8fa5b0;
+  --border:      #e2e8ed;
+  --border-mid:  #d0dae2;
+  --bg:          #f4f6f8;
+  --bg-card:     #ffffff;
+  --bg-sidebar:  #0D1F2D;
+  --sidebar-w:   232px;
+  --topbar-h:    60px;
+  --radius:      6px;
+  --green:       #1a9e5c;
+  --green-bg:    #eaf7f0;
+  --red:         #d63b2f;
+  --red-bg:      #fdf0ee;
+  --blue:        #2b7dd4;
+  --blue-bg:     #edf4fd;
+  --orange:      #d97706;
+  --orange-bg:   #fef3e2;
+  --gold-bg:     #fdf4e7;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: 'Roboto', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════ */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg-sidebar);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  border-right: 1px solid rgba(0,0,0,0.08);
+}
+
+.sidebar-brand {
+  height: var(--topbar-h);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 5px;
+  background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem; letter-spacing: 0.06em;
+  color: var(--navy); flex-shrink: 0;
+}
+.brand-text { font-weight: 700; font-size: 1rem; letter-spacing: 0.16em; color: var(--gold); }
+.brand-sub  { font-size: 0.5rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-top: 1px; }
+
+.sidebar-scroll { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+.sidebar-scroll::-webkit-scrollbar { width: 0; }
+
+.sidebar-section {
+  padding: 18px 20px 5px;
+  font-size: 0.55rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 12px 8px 20px;
+  cursor: pointer; font-size: 0.72rem; font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  transition: all 0.15s; position: relative;
+  text-decoration: none; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.04); }
+.nav-item.active {
+  color: var(--gold);
+  border-left-color: var(--gold);
+  background: rgba(200,146,42,0.08);
+}
+.nav-badge {
+  margin-left: auto; font-size: 0.55rem; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px; min-width: 20px; text-align: center;
+}
+.nav-badge.amber { background: rgba(200,146,42,0.2); color: var(--gold); }
+.nav-badge.red   { background: rgba(214,59,47,0.2);  color: #e05a50; }
+
+.sidebar-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 12px 14px; flex-shrink: 0;
+}
+.admin-profile {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 6px; border-radius: var(--radius); cursor: pointer;
+  transition: background 0.15s;
+}
+.admin-profile:hover { background: rgba(255,255,255,0.05); }
+.admin-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.65rem; color: var(--navy);
+}
+.admin-name { font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.8); }
+.admin-role { font-size: 0.58rem; color: rgba(255,255,255,0.3); margin-top: 1px; }
+
+/* ══════════════════════════════════════
+   MAIN AREA
+══════════════════════════════════════ */
+.main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+
+.topbar {
+  height: var(--topbar-h);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 28px;
+  position: sticky; top: 0; z-index: 50;
+  flex-shrink: 0;
+}
+.topbar-title   { font-size: 0.92rem; font-weight: 700; color: var(--text); }
+.topbar-crumb   { font-size: 0.65rem; color: var(--text-faint); margin-top: 1px; }
+
+.topbar-search { flex: 1; max-width: 320px; margin-left: 24px; position: relative; }
+.topbar-search input {
+  width: 100%; background: var(--bg); border: 1px solid var(--border-mid);
+  border-radius: var(--radius); padding: 7px 12px 7px 34px;
+  color: var(--text); font-family: 'Roboto', sans-serif;
+  font-size: 0.72rem; outline: none; transition: border-color 0.2s;
+}
+.topbar-search input:focus { border-color: var(--gold); }
+.topbar-search input::placeholder { color: var(--text-faint); }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-faint); }
+
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.live-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  background: var(--green-bg); border: 1px solid rgba(26,158,92,0.2);
+  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--green);
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 1.4s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.icon-btn {
+  width: 32px; height: 32px; border-radius: var(--radius);
+  background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-muted); font-size: 0.85rem;
+  transition: all 0.15s; position: relative;
+}
+.icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+.notif-dot {
+  position: absolute; top: 4px; right: 4px; width: 7px; height: 7px;
+  border-radius: 50%; background: var(--gold); border: 2px solid var(--bg-card);
+}
+
+/* ══════════════════════════════════════
+   CONTENT
+══════════════════════════════════════ */
+.content { padding: 24px 28px; flex: 1; }
+
+/* ALERT STRIP */
+.alert-strip {
+  background: var(--gold-bg); border: 1px solid rgba(200,146,42,0.25);
+  border-radius: 8px; padding: 11px 18px;
+  display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.alert-tag {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold); background: rgba(200,146,42,0.15); padding: 3px 8px;
+  border-radius: 3px; flex-shrink: 0; margin-right: 14px;
+}
+.alert-item {
+  font-size: 0.68rem; color: var(--text-muted);
+  padding: 0 14px; border-left: 1px solid rgba(200,146,42,0.2);
+  flex-shrink: 0; line-height: 1.3;
+}
+.alert-item:first-of-type { border-left: none; padding-left: 0; }
+.alert-item strong { color: var(--text); font-weight: 600; }
+.alert-dismiss {
+  margin-left: auto; font-size: 0.65rem; color: var(--text-faint);
+  cursor: pointer; padding: 2px 6px; border-radius: 3px;
+  transition: background 0.15s;
+}
+.alert-dismiss:hover { background: rgba(200,146,42,0.12); color: var(--gold); }
+
+/* ══════════════════════════════════════
+   KPI CARDS
+══════════════════════════════════════ */
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+
+.kpi-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px 20px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); border-color: var(--border-mid); }
+
+.kpi-label {
+  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 8px;
+}
+.kpi-value { font-size: 1.75rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
+.kpi-value em { color: var(--gold); font-style: normal; }
+.kpi-sub { margin-top: 7px; font-size: 0.65rem; color: var(--text-faint); display: flex; align-items: center; gap: 5px; }
+.kpi-change { font-weight: 600; }
+.kpi-change.up   { color: var(--green); }
+.kpi-change.down { color: var(--red); }
+.kpi-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+.kpi-bar-fill { height: 100%; border-radius: 2px; background: var(--gold); }
+
+/* ══════════════════════════════════════
+   LAYOUT GRIDS
+══════════════════════════════════════ */
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 320px; gap: 14px; margin-bottom: 14px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.col-span-2 { grid-column: span 2; }
+
+/* ══════════════════════════════════════
+   PANELS
+══════════════════════════════════════ */
+.panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+}
+.panel-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+.panel-title { font-size: 0.75rem; font-weight: 700; color: var(--text); letter-spacing: 0.01em; }
+.panel-action {
+  font-size: 0.62rem; font-weight: 600; color: var(--gold); cursor: pointer;
+  letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.85; transition: opacity 0.15s;
+}
+.panel-action:hover { opacity: 1; }
+
+/* TABS */
+.tab-row { display: flex; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 9px 16px; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--text-faint); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s;
+}
+.tab:hover { color: var(--text-muted); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ══════════════════════════════════════
+   CHART
+══════════════════════════════════════ */
+.chart-wrap { padding: 18px 20px 0; }
+.chart-legend { display: flex; gap: 16px; margin-bottom: 14px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.62rem; color: var(--text-faint); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.chart-svg { width: 100%; overflow: visible; display: block; }
+
+.spark-row { display: flex; gap: 10px; padding: 14px 20px 18px; }
+.spark-item {
+  flex: 1; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px 12px;
+}
+.spark-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 3px; }
+.spark-value { font-size: 1rem; font-weight: 700; color: var(--text); }
+.spark-change { font-size: 0.6rem; font-weight: 600; margin-top: 2px; }
+
+/* ══════════════════════════════════════
+   FEED
+══════════════════════════════════════ */
+.feed-item {
+  display: flex; align-items: flex-start; gap: 11px;
+  padding: 11px 20px; border-bottom: 1px solid var(--border);
+  transition: background 0.12s; cursor: pointer;
+}
+.feed-item:last-child { border-bottom: none; }
+.feed-item:hover { background: var(--bg); }
+.feed-avatar {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 700; margin-top: 1px;
+}
+.feed-text { font-size: 0.71rem; color: var(--text-muted); line-height: 1.45; }
+.feed-text strong { color: var(--text); font-weight: 600; }
+.feed-time { font-size: 0.6rem; color: var(--text-faint); margin-top: 3px; }
+.feed-indicator {
+  width: 5px; height: 5px; border-radius: 50%; margin-top: 6px; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════
+   TABLE
+══════════════════════════════════════ */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  padding: 9px 20px; text-align: left;
+  font-size: 0.58rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-faint); border-bottom: 1px solid var(--border);
+  background: var(--bg); white-space: nowrap;
+}
+tbody td {
+  padding: 11px 20px; font-size: 0.71rem; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bg); }
+.td-name { font-weight: 600; color: var(--text); }
+.td-flag { margin-right: 5px; }
+.amount-in  { color: var(--green); font-weight: 600; }
+.amount-out { color: var(--text-faint); font-weight: 500; }
+.row-action { color: var(--text-faint); cursor: pointer; font-size: 0.75rem; }
+.row-action:hover { color: var(--gold); }
+
+/* BADGES */
+.badge {
+  display: inline-block; font-size: 0.55rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 3px;
+}
+.badge-green  { background: var(--green-bg);  color: var(--green); }
+.badge-gold   { background: var(--gold-bg);   color: var(--gold); }
+.badge-blue   { background: var(--blue-bg);   color: var(--blue); }
+.badge-red    { background: var(--red-bg);    color: var(--red); }
+.badge-orange { background: var(--orange-bg); color: var(--orange); }
+.badge-grey   { background: var(--bg);        color: var(--text-faint); border: 1px solid var(--border); }
+
+/* ══════════════════════════════════════
+   VERIFICATION QUEUE
+══════════════════════════════════════ */
+.verify-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px; border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+.verify-item:last-child { border-bottom: none; }
+.verify-item:hover { background: var(--bg); }
+.verify-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 700;
+}
+.verify-name { font-size: 0.72rem; font-weight: 600; color: var(--text); }
+.verify-meta { font-size: 0.6rem; color: var(--text-faint); margin-top: 1px; }
+.verify-actions { display: flex; gap: 5px; margin-left: auto; }
+.v-btn {
+  padding: 4px 10px; border-radius: 4px; cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.58rem; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; border: 1px solid transparent; transition: all 0.15s;
+}
+.v-approve { background: var(--green-bg); color: var(--green); border-color: rgba(26,158,92,0.2); }
+.v-approve:hover { background: var(--green); color: #fff; }
+.v-reject  { background: var(--red-bg);   color: var(--red);   border-color: rgba(214,59,47,0.2); }
+.v-reject:hover  { background: var(--red);   color: #fff; }
+
+/* ══════════════════════════════════════
+   PROGRESS BARS
+══════════════════════════════════════ */
+.progress-list { padding: 14px 20px; display: flex; flex-direction: column; gap: 12px; }
+.progress-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.progress-label { font-size: 0.68rem; font-weight: 500; color: var(--text-muted); }
+.progress-pct   { font-size: 0.68rem; font-weight: 700; color: var(--text); }
+.progress-bar   { height: 4px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill  { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(.16,1,.3,1); }
+
+/* ══════════════════════════════════════
+   NATIONS
+══════════════════════════════════════ */
+.nations-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 14px; }
+.nation-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px 12px;
+  transition: border-color 0.15s;
+}
+.nation-card:hover { border-color: var(--gold); }
+.nation-name  { font-size: 0.68rem; font-weight: 600; color: var(--text); margin-bottom: 1px; }
+.nation-count { font-size: 0.6rem; color: var(--text-faint); margin-bottom: 5px; }
+.nation-bar   { height: 3px; background: var(--border-mid); border-radius: 2px; overflow: hidden; }
+.nation-fill  { height: 100%; background: var(--gold); border-radius: 2px; }
+
+/* PAYOUT BLOCK */
+.payout-block { padding: 0 20px 18px; }
+.payout-divider { height: 1px; background: var(--border); margin-bottom: 14px; }
+.payout-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px; }
+.payout-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.payout-row:last-of-type { border-bottom: none; }
+.payout-method { color: var(--text-muted); }
+.payout-amount-green  { color: var(--green); font-weight: 600; }
+.payout-amount-orange { color: var(--orange); font-weight: 600; }
+.release-btn {
+  margin-top: 14px; width: 100%; padding: 9px;
+  background: var(--gold); color: var(--navy); border: none;
+  border-radius: var(--radius); font-family: 'Roboto', sans-serif;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; cursor: pointer; transition: background 0.15s;
+}
+.release-btn:hover { background: var(--gold-light); }
+
+/* SCROLL */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-mark">T</div>
+    <div>
+      <div class="brand-text">TALO</div>
+      <div class="brand-sub">Admin Console</div>
+    </div>
+  </div>
+
+  <div class="sidebar-scroll">
+    <div class="sidebar-section">Main</div>
+    <a class="nav-item active" href="#">Overview</a>
+    <a class="nav-item" href="#">Analytics</a>
+    <a class="nav-item" href="#">Alerts <span class="nav-badge red">7</span></a>
+
+    <div class="sidebar-section">Exchange</div>
+    <a class="nav-item" href="#">Marketplace</a>
+    <a class="nav-item" href="#">Transactions <span class="nav-badge amber">14</span></a>
+    <a class="nav-item" href="#">Live Deals</a>
+    <a class="nav-item" href="#">Tickets &amp; Events</a>
+
+    <div class="sidebar-section">Users</div>
+    <a class="nav-item" href="#">Athletes</a>
+    <a class="nav-item" href="#">Investors</a>
+    <a class="nav-item" href="#">Clubs</a>
+    <a class="nav-item" href="#">Verification Queue <span class="nav-badge red">23</span></a>
+
+    <div class="sidebar-section">Finance</div>
+    <a class="nav-item" href="#">Wallets &amp; Payouts</a>
+    <a class="nav-item" href="#">Revenue</a>
+    <a class="nav-item" href="#">Escrow</a>
+
+    <div class="sidebar-section">System</div>
+    <a class="nav-item" href="#">Settings</a>
+    <a class="nav-item" href="#">Audit Log</a>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="admin-profile">
+      <div class="admin-avatar">SA</div>
+      <div>
+        <div class="admin-name">Super Admin</div>
+        <div class="admin-role">Exchange Controller</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════ MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Exchange Overview</div>
+      <div class="topbar-crumb">Admin / Dashboard</div>
+    </div>
+
+    <div class="topbar-search">
+      <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search users, deals, transactions…">
+    </div>
+
+    <div class="topbar-right">
+      <div class="live-pill">
+        <div class="live-dot"></div>
+        Live
+      </div>
+      <div class="icon-btn" title="Notifications">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="icon-btn" title="Refresh">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ALERT STRIP -->
+    <div class="alert-strip" id="alertStrip">
+      <div class="alert-tag">Action Required</div>
+      <div class="alert-item"><strong>23 users</strong> pending verification</div>
+      <div class="alert-item"><strong>4 escrow</strong> disputes flagged</div>
+      <div class="alert-item"><strong>KES 2.1M</strong> payout batch ready</div>
+      <div class="alert-item"><strong>2 clubs</strong> documents expired</div>
+      <span class="alert-dismiss" onclick="document.getElementById('alertStrip').remove()">Dismiss</span>
+    </div>
+
+    <!-- KPI ROW -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Capital Deployed</div>
+        <div class="kpi-value">$<em>4.12B</em></div>
+        <div class="kpi-sub"><span class="kpi-change up">+18.4%</span> vs last quarter</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:82%"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Verified Athletes</div>
+        <div class="kpi-value"><em>18,432</em></div>
+        <div class="kpi-sub"><span class="kpi-change up">+341</span> this month</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:71%"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active Deals</div>
+        <div class="kpi-value"><em>2,847</em></div>
+        <div class="kpi-sub"><span class="kpi-change up">+12.1%</span> week-on-week</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:64%"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Platform Revenue (MTD)</div>
+        <div class="kpi-value">$<em>841K</em></div>
+        <div class="kpi-sub"><span class="kpi-change down">−3.2%</span> vs last month</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:48%;background:var(--text-faint);"></div></div>
+      </div>
+    </div>
+
+    <!-- ROW 1: Chart + Feed -->
+    <div class="grid-3">
+
+      <!-- Revenue Chart (spans 2 cols) -->
+      <div class="panel col-span-2">
+        <div class="panel-header">
+          <div class="panel-title">Revenue &amp; Deal Flow — Last 12 Months</div>
+          <div class="tab-row" style="border:none;margin-bottom:0;">
+            <div class="tab active">Revenue</div>
+            <div class="tab">Deals</div>
+            <div class="tab">Users</div>
+          </div>
+          <span class="panel-action">Export CSV</span>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Revenue (USD)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Deal Volume</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--border-mid)"></div>Target</div>
+          </div>
+          <svg class="chart-svg" viewBox="0 0 660 160" height="160" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="revG" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#C8922A" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#C8922A" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="dealG" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2b7dd4" stop-opacity="0.12"/>
+                <stop offset="100%" stop-color="#2b7dd4" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid -->
+            <line x1="0" y1="20"  x2="660" y2="20"  stroke="#e2e8ed" stroke-width="1"/>
+            <line x1="0" y1="56"  x2="660" y2="56"  stroke="#e2e8ed" stroke-width="1"/>
+            <line x1="0" y1="92"  x2="660" y2="92"  stroke="#e2e8ed" stroke-width="1"/>
+            <line x1="0" y1="128" x2="660" y2="128" stroke="#e2e8ed" stroke-width="1"/>
+            <!-- Target -->
+            <line x1="0" y1="50" x2="660" y2="50" stroke="#d0dae2" stroke-width="1" stroke-dasharray="5 4"/>
+            <!-- Deal area -->
+            <path d="M0,125 C55,120 55,112,110,108 C165,104 165,96,220,90 C275,84 275,78,330,72 C385,66 385,60,440,52 C495,44 495,50,550,40 C605,30 605,34,660,26 L660,160 L0,160Z" fill="url(#dealG)"/>
+            <path d="M0,125 C55,120 55,112,110,108 C165,104 165,96,220,90 C275,84 275,78,330,72 C385,66 385,60,440,52 C495,44 495,50,550,40 C605,30 605,34,660,26" fill="none" stroke="#2b7dd4" stroke-width="1.5" opacity="0.7"/>
+            <!-- Revenue area -->
+            <path d="M0,148 C55,136 55,126,110,116 C165,106 165,100,220,88 C275,76 275,80,330,64 C385,48 385,44,440,36 C495,28 495,22,550,16 C605,10 605,14,660,10 L660,160 L0,160Z" fill="url(#revG)"/>
+            <path d="M0,148 C55,136 55,126,110,116 C165,106 165,100,220,88 C275,76 275,80,330,64 C385,48 385,44,440,36 C495,28 495,22,550,16 C605,10 605,14,660,10" fill="none" stroke="var(--gold)" stroke-width="2"/>
+            <!-- Peak dot -->
+            <circle cx="660" cy="10" r="3.5" fill="var(--gold)"/>
+            <circle cx="660" cy="10" r="7" fill="var(--gold)" opacity="0.15"/>
+            <!-- Month labels -->
+            <text x="0"   y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">May</text>
+            <text x="55"  y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Jun</text>
+            <text x="110" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Jul</text>
+            <text x="165" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Aug</text>
+            <text x="220" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Sep</text>
+            <text x="275" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Oct</text>
+            <text x="330" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Nov</text>
+            <text x="385" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Dec</text>
+            <text x="440" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Jan</text>
+            <text x="495" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Feb</text>
+            <text x="550" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Mar</text>
+            <text x="605" y="156" fill="#8fa5b0" font-size="8.5" font-family="Roboto,sans-serif">Apr</text>
+          </svg>
+        </div>
+        <div class="spark-row">
+          <div class="spark-item">
+            <div class="spark-label">Sponsorships</div>
+            <div class="spark-value">$1.4M</div>
+            <div class="spark-change" style="color:var(--green)">+22% MoM</div>
+          </div>
+          <div class="spark-item">
+            <div class="spark-label">Investments</div>
+            <div class="spark-value">$2.1M</div>
+            <div class="spark-change" style="color:var(--green)">+31% MoM</div>
+          </div>
+          <div class="spark-item">
+            <div class="spark-label">Ticket Sales</div>
+            <div class="spark-value">$380K</div>
+            <div class="spark-change" style="color:var(--red)">−4% MoM</div>
+          </div>
+          <div class="spark-item">
+            <div class="spark-label">Merch &amp; Mem.</div>
+            <div class="spark-value">$210K</div>
+            <div class="spark-change" style="color:var(--green)">+11% MoM</div>
+          </div>
+          <div class="spark-item">
+            <div class="spark-label">Platform Fees</div>
+            <div class="spark-value">$841K</div>
+            <div class="spark-change" style="color:var(--red)">−3.2% MoM</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Activity Feed -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Live Activity</div>
+          <span class="panel-action">View All</span>
+        </div>
+        <div class="feed-item">
+          <div class="feed-avatar" style="background:#fdf4e7;color:var(--gold);">WC</div>
+          <div style="flex:1;min-width:0;">
+            <div class="feed-text"><strong>Wanjiru Chepkemoi</strong> received $48K sponsorship payout via M-Pesa</div>
+            <div class="feed-time">Just now · Nairobi, KE</div>
+          </div>
+          <div class="feed-indicator" style="background:var(--green)"></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-avatar" style="background:var(--blue-bg);color:var(--blue);">DN</div>
+          <div style="flex:1;min-width:0;">
+            <div class="feed-text"><strong>David Nkrumah</strong> placed $12K investment bid on Nairobi FC Academy</div>
+            <div class="feed-time">2 min ago · London, UK</div>
+          </div>
+          <div class="feed-indicator" style="background:var(--blue)"></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-avatar" style="background:var(--red-bg);color:var(--red);">!!</div>
+          <div style="flex:1;min-width:0;">
+            <div class="feed-text">Escrow dispute — <strong>Airtel Africa × Lagos United FC</strong> · $180K deal flagged</div>
+            <div class="feed-time">5 min ago · System</div>
+          </div>
+          <div class="feed-indicator" style="background:var(--red)"></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-avatar" style="background:#f5eef8;color:#8e44ad;">KA</div>
+          <div style="flex:1;min-width:0;">
+            <div class="feed-text"><strong>Kwame Asante</strong> transfer listing received 2 new bids · $85K</div>
+            <div class="feed-time">8 min ago · Accra, GH</div>
+          </div>
+          <div class="feed-indicator" style="background:#8e44ad"></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-avatar" style="background:var(--green-bg);color:var(--green);">GH</div>
+          <div style="flex:1;min-width:0;">
+            <div class="feed-text"><strong>Gor Mahia FC</strong> fan club reached 5,000 active members</div>
+            <div class="feed-time">11 min ago · Nairobi, KE</div>
+          </div>
+          <div class="feed-indicator" style="background:var(--green)"></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-avatar" style="background:#fdf4e7;color:var(--gold);">AD</div>
+          <div style="flex:1;min-width:0;">
+            <div class="feed-text"><strong>Amara Diallo</strong> identity verified · Athletics · Senegal</div>
+            <div class="feed-time">14 min ago · System</div>
+          </div>
+          <div class="feed-indicator" style="background:var(--gold)"></div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-avatar" style="background:#eafaf5;color:#16a085;">MT</div>
+          <div style="flex:1;min-width:0;">
+            <div class="feed-text"><strong>MTN Uganda</strong> sponsorship closed · Femi Nkosi · $24K</div>
+            <div class="feed-time">18 min ago · Kampala, UG</div>
+          </div>
+          <div class="feed-indicator" style="background:#16a085"></div>
+        </div>
+      </div>
+
+    </div><!-- /grid-3 -->
+
+    <!-- ROW 2: Transactions Table (full width) -->
+    <div class="panel" style="margin-bottom:14px;">
+      <div class="panel-header">
+        <div class="panel-title">Recent Transactions</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <select style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 10px;color:var(--text-muted);font-family:Roboto,sans-serif;font-size:0.65rem;outline:none;">
+            <option>All Types</option>
+            <option>Sponsorships</option>
+            <option>Investments</option>
+            <option>Tickets</option>
+          </select>
+          <span class="panel-action">Export</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Party</th>
+              <th>Type</th>
+              <th>Nation</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-name">Wanjiru Chepkemoi × Safaricom</td>
+              <td><span class="badge badge-blue">Sponsorship</span></td>
+              <td><span class="td-flag">🇰🇪</span>Kenya</td>
+              <td class="amount-in">+$48,000</td>
+              <td><span class="badge badge-green">Completed</span></td>
+              <td>Apr 22, 2026</td>
+              <td class="row-action">→</td>
+            </tr>
+            <tr>
+              <td class="td-name">Nairobi FC Academy Round</td>
+              <td><span class="badge badge-gold">Investment</span></td>
+              <td><span class="td-flag">🇰🇪</span>Kenya</td>
+              <td class="amount-in">+$240,000</td>
+              <td><span class="badge badge-orange">Funding</span></td>
+              <td>Apr 22, 2026</td>
+              <td class="row-action">→</td>
+            </tr>
+            <tr>
+              <td class="td-name">CAF Champions League Semi-Final</td>
+              <td><span class="badge badge-orange">Tickets</span></td>
+              <td><span class="td-flag">🇪🇬</span>Egypt</td>
+              <td class="amount-in">+$92,400</td>
+              <td><span class="badge badge-green">Completed</span></td>
+              <td>Apr 21, 2026</td>
+              <td class="row-action">→</td>
+            </tr>
+            <tr>
+              <td class="td-name">Airtel Africa × Lagos United FC</td>
+              <td><span class="badge badge-blue">Sponsorship</span></td>
+              <td><span class="td-flag">🇳🇬</span>Nigeria</td>
+              <td class="amount-in">+$180,000</td>
+              <td><span class="badge badge-red">Disputed</span></td>
+              <td>Apr 21, 2026</td>
+              <td class="row-action">→</td>
+            </tr>
+            <tr>
+              <td class="td-name">Femi Nkosi — Boxer Equity</td>
+              <td><span class="badge badge-gold">Investment</span></td>
+              <td><span class="td-flag">🇿🇦</span>South Africa</td>
+              <td class="amount-in">+$30,000</td>
+              <td><span class="badge badge-green">Funded</span></td>
+              <td>Apr 20, 2026</td>
+              <td class="row-action">→</td>
+            </tr>
+            <tr>
+              <td class="td-name">Platform fee batch — Q1</td>
+              <td><span class="badge badge-grey">Fee</span></td>
+              <td><span class="td-flag">🌍</span>Multi</td>
+              <td class="amount-out">−$21,340</td>
+              <td><span class="badge badge-green">Processed</span></td>
+              <td>Apr 19, 2026</td>
+              <td class="row-action">→</td>
+            </tr>
+            <tr>
+              <td class="td-name">Gor Mahia FC Fan Memberships</td>
+              <td><span class="badge badge-grey">Merch</span></td>
+              <td><span class="td-flag">🇰🇪</span>Kenya</td>
+              <td class="amount-in">+$5,040</td>
+              <td><span class="badge badge-green">Completed</span></td>
+              <td>Apr 19, 2026</td>
+              <td class="row-action">→</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ROW 3: Verification + Sport Mix + Nations -->
+    <div class="grid-3">
+
+      <!-- Verification Queue -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Verification Queue <span class="badge badge-red" style="margin-left:6px;">23</span></div>
+          <span class="panel-action">View All</span>
+        </div>
+        <div class="verify-item">
+          <div class="verify-avatar" style="background:#fdf4e7;color:var(--gold);">JO</div>
+          <div style="flex:1;min-width:0;">
+            <div class="verify-name">James Otieno</div>
+            <div class="verify-meta">Club — Nairobi FC · Kenya · ID uploaded</div>
+          </div>
+          <div class="verify-actions">
+            <button class="v-btn v-approve">Approve</button>
+            <button class="v-btn v-reject">Reject</button>
+          </div>
+        </div>
+        <div class="verify-item">
+          <div class="verify-avatar" style="background:var(--blue-bg);color:var(--blue);">AO</div>
+          <div style="flex:1;min-width:0;">
+            <div class="verify-name">Almaz Osei</div>
+            <div class="verify-meta">Athlete — Athletics · Ethiopia · Cert pending</div>
+          </div>
+          <div class="verify-actions">
+            <button class="v-btn v-approve">Approve</button>
+            <button class="v-btn v-reject">Reject</button>
+          </div>
+        </div>
+        <div class="verify-item">
+          <div class="verify-avatar" style="background:#f5eef8;color:#8e44ad;">DN</div>
+          <div style="flex:1;min-width:0;">
+            <div class="verify-name">David Nkrumah-Asante</div>
+            <div class="verify-meta">Investor — Ghana/UK · Fund docs uploaded</div>
+          </div>
+          <div class="verify-actions">
+            <button class="v-btn v-approve">Approve</button>
+            <button class="v-btn v-reject">Reject</button>
+          </div>
+        </div>
+        <div class="verify-item">
+          <div class="verify-avatar" style="background:var(--green-bg);color:var(--green);">CB</div>
+          <div style="flex:1;min-width:0;">
+            <div class="verify-name">Chukwuemeka Bello</div>
+            <div class="verify-meta">Athlete — Football · Nigeria · ID uploaded</div>
+          </div>
+          <div class="verify-actions">
+            <button class="v-btn v-approve">Approve</button>
+            <button class="v-btn v-reject">Reject</button>
+          </div>
+        </div>
+        <div class="verify-item">
+          <div class="verify-avatar" style="background:var(--orange-bg);color:var(--orange);">SA</div>
+          <div style="flex:1;min-width:0;">
+            <div class="verify-name">Simba Athletics Club</div>
+            <div class="verify-meta">Club — Athletics · Tanzania · Docs in review</div>
+          </div>
+          <div class="verify-actions">
+            <button class="v-btn v-approve">Approve</button>
+            <button class="v-btn v-reject">Reject</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sport Mix + Payout -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Deal Mix by Sport</div>
+          <span class="panel-action">Details</span>
+        </div>
+        <div class="progress-list">
+          <div>
+            <div class="progress-header">
+              <span class="progress-label">Football (Soccer)</span>
+              <span class="progress-pct">38%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:38%;background:var(--gold);"></div></div>
+          </div>
+          <div>
+            <div class="progress-header">
+              <span class="progress-label">Athletics</span>
+              <span class="progress-pct">24%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:24%;background:var(--blue);"></div></div>
+          </div>
+          <div>
+            <div class="progress-header">
+              <span class="progress-label">Boxing</span>
+              <span class="progress-pct">14%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:14%;background:var(--red);"></div></div>
+          </div>
+          <div>
+            <div class="progress-header">
+              <span class="progress-label">Rugby</span>
+              <span class="progress-pct">10%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:10%;background:#8e44ad;"></div></div>
+          </div>
+          <div>
+            <div class="progress-header">
+              <span class="progress-label">Basketball</span>
+              <span class="progress-pct">8%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:8%;background:#16a085;"></div></div>
+          </div>
+          <div>
+            <div class="progress-header">
+              <span class="progress-label">Other Sports</span>
+              <span class="progress-pct">6%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:6%;background:var(--border-mid);"></div></div>
+          </div>
+        </div>
+        <div class="payout-block">
+          <div class="payout-divider"></div>
+          <div class="payout-label">Wallet Payout Queue</div>
+          <div class="payout-row">
+            <span class="payout-method">M-Pesa (KE / TZ)</span>
+            <span class="payout-amount-green">KES 1,240,000 ready</span>
+          </div>
+          <div class="payout-row">
+            <span class="payout-method">MTN Mobile (NG / UG / GH)</span>
+            <span class="payout-amount-green">$48,200 ready</span>
+          </div>
+          <div class="payout-row">
+            <span class="payout-method">SWIFT / Bank Transfer</span>
+            <span class="payout-amount-orange">$120,000 pending</span>
+          </div>
+          <button class="release-btn">Release Payout Batch</button>
+        </div>
+      </div>
+
+      <!-- Top Nations -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Top Nations by Deal Flow</div>
+          <span class="panel-action">54 Total</span>
+        </div>
+        <div class="nations-grid">
+          <div class="nation-card">
+            <div class="nation-name">🇰🇪 Kenya</div>
+            <div class="nation-count">3,841 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:92%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇳🇬 Nigeria</div>
+            <div class="nation-count">3,210 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:78%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇬🇭 Ghana</div>
+            <div class="nation-count">2,180 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:55%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇿🇦 S. Africa</div>
+            <div class="nation-count">1,940 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:48%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇪🇹 Ethiopia</div>
+            <div class="nation-count">1,620 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:40%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇹🇿 Tanzania</div>
+            <div class="nation-count">1,240 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:32%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇺🇬 Uganda</div>
+            <div class="nation-count">980 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:25%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇸🇳 Senegal</div>
+            <div class="nation-count">840 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:21%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇪🇬 Egypt</div>
+            <div class="nation-count">720 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:18%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇿🇼 Zimbabwe</div>
+            <div class="nation-count">580 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:14%"></div></div>
+          </div>
+          <div class="nation-card">
+            <div class="nation-name">🇲🇦 Morocco</div>
+            <div class="nation-count">490 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:12%"></div></div>
+          </div>
+          <div class="nation-card" style="background:var(--gold-bg);border-color:rgba(200,146,42,0.25);">
+            <div class="nation-name" style="color:var(--gold);">+43 Nations</div>
+            <div class="nation-count">4,120 deals</div>
+            <div class="nation-bar"><div class="nation-fill" style="width:100%;opacity:0.4;"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid-3 row 3 -->
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+  // Tab switcher
+  document.querySelectorAll('.tab-row').forEach(row => {
+    row.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        row.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+        tab.classList.add('active')
+      })
+    })
+  })
+
+  // Nav active state
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault()
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+      item.classList.add('active')
+    })
+  })
+
+  // Verification approve/reject
+  document.querySelectorAll('.v-approve').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.verify-item')
+      row.style.transition = 'opacity 0.3s, transform 0.3s'
+      row.style.opacity = '0'
+      row.style.transform = 'translateX(8px)'
+      setTimeout(() => row.remove(), 300)
+    })
+  })
+  document.querySelectorAll('.v-reject').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.verify-item')
+      row.style.background = 'var(--red-bg)'
+      row.style.transition = 'opacity 0.3s 0.5s, transform 0.3s 0.5s, background 0.2s'
+      setTimeout(() => {
+        row.style.opacity = '0'
+        row.style.transform = 'translateX(-8px)'
+      }, 500)
+      setTimeout(() => row.remove(), 850)
+    })
+  })
+
+  // Animate progress bars
+  document.querySelectorAll('.progress-fill').forEach(bar => {
+    const w = bar.style.width
+    bar.style.width = '0'
+    requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = w }))
+  })
+
+  // Animate KPI bars
+  document.querySelectorAll('.kpi-bar-fill').forEach(bar => {
+    const w = bar.style.width
+    bar.style.width = '0'
+    setTimeout(() => { bar.style.transition = 'width 1s ease'; bar.style.width = w }, 200)
+  })
+</script>
+</body>
+</html>
