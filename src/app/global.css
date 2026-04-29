@@ -49,20 +49,20 @@ nav {
 }
 .logo {
   font-weight: 900; font-size: 1.55rem; letter-spacing: 0.2em;
-  color: var(--gold); text-decoration: none; text-transform: uppercase;
+  color: var(--gold); text-decoration: none; text-transform: capitalize; font-family: 'Raleway', sans-serif;
 }
 .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
 .nav-links a {
   font-size: 0.78rem; font-weight: 600; letter-spacing: 0.07em;
-  text-transform: uppercase; color: rgba(255,255,255,0.8); text-decoration: none;
-  transition: color 0.2s; cursor: pointer;
+  text-transform: capitalize; color: rgba(255,255,255,0.8); text-decoration: none;
+  transition: color 0.2s; cursor: pointer; font-family: 'Raleway', sans-serif;
 }
 .nav-links a:hover { color: #fff; }
 .nav-links a.nav-active { color: var(--gold) !important; }
 .nav-cta {
   background: var(--gold); color: var(--navy) !important;
   padding: 0.45rem 1.2rem; border-radius: var(--radius); font-weight: 700 !important;
-  transition: background 0.2s, transform 0.15s !important;
+  transition: background 0.2s, transform 0.15s !important; font-family: 'Raleway', sans-serif !important;
 }
 .nav-cta:hover { background: var(--gold-light) !important; transform: translateY(-1px); }
 

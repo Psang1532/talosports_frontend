@@ -8,8 +8,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
 
-  const isHome = pathname === '/'
+  const isHome        = pathname === '/'
   const isMarketplace = pathname.startsWith('/marketplace')
+  const isAdvisory    = pathname.startsWith('/advisory')     
 
   return (
     <>
@@ -26,6 +27,14 @@ export default function Navbar() {
               className={isMarketplace ? 'nav-active' : ''}
             >
               Marketplace
+            </Link>
+          </li>
+          <li>                                                
+            <Link
+              href="/advisory"
+              className={isAdvisory ? 'nav-active' : ''}
+            >
+              Advisory
             </Link>
           </li>
           <li><a href="/#roles">Ecosystem</a></li>
@@ -52,6 +61,7 @@ export default function Navbar() {
       <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
         <Link href="/"            onClick={() => setMenuOpen(false)}>Home</Link>
         <Link href="/marketplace" onClick={() => setMenuOpen(false)}>Marketplace</Link>
+        <Link href="/advisory"    onClick={() => setMenuOpen(false)}>Advisory</Link> 
         <a href="/#roles"         onClick={() => setMenuOpen(false)}>Ecosystem</a>
         <a href="/#how"           onClick={() => setMenuOpen(false)}>How It Works</a>
         <Link href="/register"    onClick={() => setMenuOpen(false)}>Join Free →</Link>
