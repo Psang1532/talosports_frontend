@@ -16,7 +16,7 @@ export default function AdvisoryProcess() {
       <div className="adv-process-layout">
         <div className="adv-process-left">
           <p className="adv-section-label">How We Work</p>
-          <h2 className="adv-section-title">The Active Broker Approach</h2>
+          <h2 className="adv-section-title">The Active Approach</h2>
           <p>
             We go beyond advising. We act as your partner in the market — connecting
             opportunities, aligning stakeholders and driving deals from strategy to signature.
