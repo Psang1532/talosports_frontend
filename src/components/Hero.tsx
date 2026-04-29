@@ -15,7 +15,6 @@ export default function HeroSection() {
             <span className="live-dot" />
             Live Exchange
           </div>
-          <div className="eyebrow-tag">54 African Nations · 12 Sports</div>
         </div>
 
         <h1>
