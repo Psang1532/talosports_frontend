@@ -7,7 +7,6 @@ export default function TickerBar() {
 
   return (
     <div className="ticker-bar">
-      <div className="ticker-label">Live Exchange</div>
       <div className="ticker-track" aria-label="Live marketplace activity">
         <div className="ticker-inner">
           {items.map((item, index) => (

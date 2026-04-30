@@ -21,13 +21,16 @@ export default function Footer() {
               <Link href="/">Home</Link>
             </li>
             <li>
-              <a href="/#marketplace">Marketplace</a>
+              <Link href="/marketplace">Marketplace</Link>
             </li>
             <li>
               <a href="/#roles">Ecosystem</a>
             </li>
             <li>
               <a href="/#how">How It Works</a>
+            </li>
+            <li>
+              <Link href="/advisory">Advisory</Link>
             </li>
           </ul>
         </div>
@@ -51,7 +54,7 @@ export default function Footer() {
       </div>
       <div className="footer-bot">
         <p className="fcopy">
-          © 2026 TALO Africa. All rights reserved. · @iLabAfrica
+          © 2026 TALO Africa. All rights reserved.
         </p>
         <ul className="flegal">
           <li>
