@@ -91,11 +91,11 @@ export default function Summit() {
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <span style={{ width: 1, height: 18, background: "rgba(200,146,42,0.45)" }} />
-            <span style={{ fontSize:18, fontWeight: 700, letterSpacing: 2.5, color: "rgb(255,255,255)", textTransform: "uppercase" }}>TALO Summit Series</span>
+            <span style={{ fontSize:13, fontWeight: 700, letterSpacing: 2.5, color: "rgb(255,255,255)", textTransform: "uppercase" }}>TALO Summit Series</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <span style={{ fontSize: 19, color: "rgba(255,255,255,0.60)", letterSpacing: 1 }}>Nairobi · Accra · Lagos</span>
-            <button style={{ background: "var(--gold)", color: "#0D1F2D", border: "none", padding: "10px 22px", borderRadius: 6, fontWeight: 700, fontSize: 16, letterSpacing: 1, cursor: "pointer", textTransform: "uppercase" }}>
+            <span style={{ fontSize: 14, color: "rgba(255,255,255,0.60)", letterSpacing: 1 }}>Nairobi · Accra · Lagos</span>
+            <button style={{ background: "var(--gold)", color: "#0D1F2D", border: "none", padding: "10px 22px", borderRadius: 6, fontWeight: 700, fontSize: 13, letterSpacing: 1, cursor: "pointer", textTransform: "uppercase" }}>
               Partnership Applications
             </button>
           </div>
