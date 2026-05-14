@@ -41,14 +41,14 @@ export default function Navbar({ transparent = false }: NavbarProps) {
               Advisory
             </Link>
           </li>
-          <li><a href="/#roles">Ecosystem</a></li>
+          <li><a href="/#roles">Roles</a></li>
           <li><a href="/#how">How It Works</a></li>
           <li>
             <Link
               href="/register"
               className={`nav-cta${pathname === '/register' ? ' nav-active' : ''}`}
             >
-              Join Free
+              Join Now 
             </Link>
           </li>
         </ul>

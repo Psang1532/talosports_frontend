@@ -32,8 +32,8 @@ export default function MarketplacePage() {
 
       <div className="tab-content">
         {activeTab === 0 && <SponsorshipTab />}
-        {activeTab === 1 && <ComingSoon label="Athlete Economy & Brand Marketplace" />}
-        {activeTab === 2 && <ComingSoon label="Fan Engagement Ecosystem" />}
+        {activeTab === 1 && <ComingSoon label="Agent Dashboard" />}
+        {activeTab === 2 && <ComingSoon label="Fan Engagement" />}
         {activeTab === 3 && <ComingSoon label="Sports Data & Intelligence Layer" />}
         {activeTab === 4 && <ComingSoon label="Sports Investment & Infrastructure Hub" />}
       </div>

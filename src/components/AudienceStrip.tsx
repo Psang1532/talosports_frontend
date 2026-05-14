@@ -40,7 +40,7 @@ export default function AudienceStrip() {
       <div className="inner" style={{ marginBottom: "2rem" }}>
         <p className="sec-label">Who It&apos;s For</p>
         <h2 className="sec-title">
-          Six pillars of the <em>ecosystem</em>.
+          Key Verticals:
         </h2>
       </div>
 

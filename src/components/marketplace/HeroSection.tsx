@@ -13,7 +13,7 @@ export default function HeroSection() {
         </h1>
         <p className="hero-sub">
           Sponsorships, investments, fan experiences, and athlete opportunities
-          — all in one ecosystem.
+          — all in one place.
         </p>
       </div>
 

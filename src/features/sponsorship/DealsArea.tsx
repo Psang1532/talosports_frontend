@@ -11,8 +11,7 @@ const SUB_TABS: { id: SubTab; label: string }[] = [
   { id: 'all', label: 'All Deals' },
   { id: 'athletes', label: 'Athletes' },
   { id: 'clubs', label: 'Clubs & Teams' },
-  { id: 'campaigns', label: 'Brand Campaigns' },
-  { id: 'endorsements', label: 'Endorsements' },
+  { id: 'campaigns', label: 'Brands' },
 ];
 
 interface DealsAreaProps {
@@ -22,7 +21,7 @@ interface DealsAreaProps {
 export default function DealsArea({ appliedFilters }: DealsAreaProps) {
   const [subTab, setSubTab] = useState<SubTab>('all');
   const [sort, setSort] = useState<SortOption>('relevant');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   const filteredDeals = useMemo(() => {
     let deals = [...MOCK_DEALS];
@@ -91,7 +90,6 @@ export default function DealsArea({ appliedFilters }: DealsAreaProps) {
           Showing <strong>{filteredDeals.length} opportunities</strong>
         </div>
         <div className="toolbar-right">
-          <span className="sort-label">Sort by:</span>
           <select
             className="sort-select"
             value={sort}
@@ -104,13 +102,6 @@ export default function DealsArea({ appliedFilters }: DealsAreaProps) {
             ))}
           </select>
           <div className="view-toggles">
-            <button
-              className={`view-btn${viewMode === 'grid' ? ' active' : ''}`}
-              title="Grid view"
-              onClick={() => setViewMode('grid')}
-            >
-              ⊞
-            </button>
             <button
               className={`view-btn${viewMode === 'list' ? ' active' : ''}`}
               title="List view"

@@ -46,5 +46,5 @@ export interface FilterState {
 }
 
 export type SortOption = 'relevant' | 'newest' | 'closing' | 'highest' | 'competitive';
-export type ViewMode = 'grid' | 'list';
+export type ViewMode = 'list' ;
 export type SubTab = 'all' | 'athletes' | 'clubs' | 'campaigns' | 'endorsements';

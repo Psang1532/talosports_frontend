@@ -3,9 +3,9 @@
 import type { MarketplaceTab, MetricStat, DealCard } from '@/types/marketplace';
 
 export const MARKETPLACE_TABS: MarketplaceTab[] = [
-  { id: 0, label: 'Sponsorships & Partnership Exchange', shortLabel: 'Sponsorships' },
-  { id: 1, label: 'Athlete Economy & Brand Marketplace', shortLabel: 'Athletes' },
-  { id: 2, label: 'Fan Engagement Ecosystem', shortLabel: 'Fan Engagement' },
+  { id: 0, label: 'Sponsorships & Endorsements', shortLabel: 'Sponsorships' },
+  { id: 1, label: 'Agent Dashboard', shortLabel: 'Agency' },
+  { id: 2, label: 'Fan Engagement', shortLabel: 'Fan Engagement' },
   { id: 3, label: 'Sports Data & Intelligence Layer', shortLabel: 'Data & Intel' },
   { id: 4, label: 'Sports Investment & Infrastructure Hub', shortLabel: 'Investment' },
 ];
@@ -142,8 +142,8 @@ export const MOCK_DEALS: DealCard[] = [
   },
 ];
 
-export const SPORT_OPTIONS = ['All Sports', 'Athletics', 'Football', 'Rugby', 'Basketball', 'Cricket', 'Swimming'];
-export const COUNTRY_OPTIONS = ['All Countries', 'Kenya', 'Ghana', 'Nigeria', 'South Africa', 'Zimbabwe', 'Tanzania', 'Senegal'];
+export const SPORT_OPTIONS = ['All Sports', 'Athletics', 'Football', 'Rugby', 'Golf'];
+export const COUNTRY_OPTIONS = ['All Countries', 'Kenya', 'South Africa', 'Tanzania'];
 export const DEAL_TYPE_OPTIONS = ['All Types', 'Sponsorship', 'Endorsement', 'Kit Deal', 'Investment', 'Club Partnership'];
 export const AUDIENCE_OPTIONS = ['Any', 'Under 50K', '50K – 100K', '100K – 250K', '250K+'];
 export const SORT_OPTIONS = [
