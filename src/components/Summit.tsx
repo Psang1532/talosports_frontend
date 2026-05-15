@@ -32,6 +32,39 @@ const TALO_ROLES = [
   },
 ];
 
+const AFCON_PARTNERS = [
+  {
+    tier: "Official Beverage Partner",
+    name: "Coca-Cola",
+    logo: "🥤",
+    initial: "CC",
+    color: "#E61C24",
+    desc: "Activating across all 13 host cities with fan zones, matchday experiences, and athlete hydration partnerships. Coca-Cola's AFCON presence spans broadcast, in-stadium, and digital — reach 1.8B viewers through one activation.",
+    offer: "Fan Zone Activations",
+    offerDetail: "Exclusive sponsor of official AFCON fan parks across Nairobi, Kampala & Dar es Salaam.",
+  },
+  {
+    tier: "Official Spirits & Hospitality Partner",
+    name: "Diageo",
+    logo: "🥃",
+    initial: "DG",
+    color: "#B8963E",
+    desc: "Diageo's portfolio — Guinness, Johnnie Walker, and Smirnoff — underpins AFCON hospitality suites and athlete entertainment. The world's largest spirits group brings category exclusivity and deep African market penetration.",
+    offer: "VIP Hospitality Suite Access",
+    offerDetail: "Diageo-hosted executive suites at marquee fixtures including the Semi-Finals and Final.",
+  },
+  {
+    tier: "Official Accommodation Partner",
+    name: "Partner Hotels",
+    logo: "🏨",
+    initial: "HT",
+    color: "#4A90D9",
+    desc: "A curated network of official tournament hotels offering preferential rates for registered players, delegations, and accredited commercial partners. Seamless booking, guaranteed availability, and tournament-grade security protocols.",
+    offer: "Preferential Player & Partner Rates",
+    offerDetail: "Up to 35% below market rate for TALO-accredited athletes and delegation members across all host cities.",
+  },
+];
+
 const STADIUM_URL = "https://www.cafonline.com/media/brpfuxd5/tangiers-stadium2.jpg?width=1320";
 
 // Hero + AFCON: lighter overlay so the image shows through more
@@ -61,6 +94,7 @@ const fixedBgDark: React.CSSProperties = {
 export default function Summit() {
   const [hoveredStat, setHoveredStat] = useState<number | null>(null);
   const [hoveredRole, setHoveredRole] = useState<number | null>(null);
+  const [hoveredPartner, setHoveredPartner] = useState<number | null>(null);
 
   return (
     <div style={{ fontFamily: "'Raleway', sans-serif", color: "var(--cream)", overflowX: "hidden" }}>
@@ -181,6 +215,159 @@ export default function Summit() {
                 <div style={{ fontSize: 11, color: "rgba(255,255,255,0.42)" }}>{s.sub}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── AFCON OFFICIAL PARTNERSHIPS ── */}
+      <div style={{
+        ...fixedBgDark,
+        borderTop: "1px solid rgba(200,146,42,0.14)",
+        padding: "88px 64px 100px",
+      }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+
+          {/* Section header */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 14 }}>
+            <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: 3, color: "var(--gold)", textTransform: "uppercase" }}>Official Partnerships</div>
+            <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, var(--gold), transparent)", opacity: 0.35 }} />
+          </div>
+
+          <h2 style={{ fontSize: 38, fontWeight: 900, lineHeight: 1.08, color: "#ffffff", marginBottom: 16, letterSpacing: -0.8, maxWidth: 620 }}>
+            The Commercial Backbone<br />
+            <span style={{ color: "var(--gold)" }}>Powering AFCON 2027.</span>
+          </h2>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.52)", lineHeight: 1.75, maxWidth: 580, marginBottom: 56 }}>
+            TALO's official partnerships with Coca-Cola, Diageo, and our curated hotel network give every athlete, brand, and investor on the platform access to the commercial infrastructure of the tournament itself.
+          </p>
+
+          {/* Partner cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 60 }}>
+            {AFCON_PARTNERS.map((p, i) => (
+              <div
+                key={i}
+                onMouseEnter={() => setHoveredPartner(i)}
+                onMouseLeave={() => setHoveredPartner(null)}
+                style={{
+                  background: hoveredPartner === i
+                    ? "rgba(200,146,42,0.09)"
+                    : "rgba(13,31,45,0.72)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
+                  border: hoveredPartner === i
+                    ? "1px solid rgba(200,146,42,0.45)"
+                    : "1px solid rgba(200,146,42,0.16)",
+                  borderRadius: 12,
+                  padding: "32px 28px 28px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 0,
+                  transition: "background 0.25s, border-color 0.25s",
+                  cursor: "default",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                {/* Subtle top accent line in partner brand color */}
+                <div style={{
+                  position: "absolute", top: 0, left: 0, right: 0,
+                  height: 3,
+                  background: p.color,
+                  opacity: hoveredPartner === i ? 0.9 : 0.45,
+                  transition: "opacity 0.25s",
+                  borderRadius: "12px 12px 0 0",
+                }} />
+
+                {/* Tier badge */}
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 7,
+                  background: "rgba(200,146,42,0.1)",
+                  border: "1px solid rgba(200,146,42,0.22)",
+                  borderRadius: 4, padding: "4px 10px",
+                  marginBottom: 22, alignSelf: "flex-start",
+                }}>
+                  <span style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--gold)", display: "inline-block", flexShrink: 0 }} />
+                  <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.8, color: "var(--gold)", textTransform: "uppercase" }}>
+                    {p.tier}
+                  </span>
+                </div>
+
+                {/* Logo monogram + partner name */}
+                <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
+                  <div style={{
+                    width: 48, height: 48, borderRadius: 10,
+                    background: p.color,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 15, fontWeight: 900, color: "#ffffff",
+                    letterSpacing: 1, flexShrink: 0,
+                    opacity: 0.92,
+                  }}>
+                    {p.initial}
+                  </div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: "#ffffff", letterSpacing: -0.3 }}>{p.name}</div>
+                </div>
+
+                {/* Description */}
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.68, marginBottom: 24 }}>
+                  {p.desc}
+                </p>
+
+                {/* Offer highlight strip */}
+                <div style={{
+                  marginTop: "auto",
+                  background: "rgba(200,146,42,0.07)",
+                  border: "1px solid rgba(200,146,42,0.2)",
+                  borderRadius: 8,
+                  padding: "14px 16px",
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: "var(--gold)", textTransform: "uppercase", marginBottom: 5 }}>
+                    {p.offer}
+                  </div>
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.5 }}>
+                    {p.offerDetail}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom CTA banner */}
+          <div style={{
+            background: "rgba(200,146,42,0.07)",
+            border: "1px solid rgba(200,146,42,0.22)",
+            borderRadius: 12,
+            padding: "32px 40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 32,
+          }}>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2.5, color: "var(--gold)", textTransform: "uppercase", marginBottom: 8 }}>
+                Exclusive to TALO-Accredited Athletes & Partners
+              </div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#ffffff", lineHeight: 1.3 }}>
+                Access preferential hotel rates, partner hospitality,<br />and co-branded activations through the TALO platform.
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 12, flexShrink: 0 }}>
+              <button style={{
+                background: "var(--gold)", color: "#0D1F2D",
+                border: "none", padding: "13px 26px", borderRadius: 8,
+                fontWeight: 800, fontSize: 12, letterSpacing: 0.8,
+                cursor: "pointer", textTransform: "uppercase", whiteSpace: "nowrap",
+              }}>
+                Claim Partner Benefits
+              </button>
+              <button style={{
+                background: "transparent", color: "rgba(255,255,255,0.65)",
+                border: "1px solid rgba(255,255,255,0.18)", padding: "13px 26px", borderRadius: 8,
+                fontWeight: 600, fontSize: 12, cursor: "pointer",
+                textTransform: "uppercase", whiteSpace: "nowrap",
+              }}>
+                Partnership Deck
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALO — Investor Intelligence Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:         #C8922A;
+  --gold-light:   #E0A93A;
+  --gold-dim:     rgba(200,146,42,0.10);
+  --gold-bg:      #fdf4e7;
+  --navy:         #0D1F2D;
+  --navy-mid:     #122535;
+  --navy-light:   #1a3347;
+  --text:         #1A2D3D;
+  --text-muted:   #5a7080;
+  --text-faint:   #8fa5b0;
+  --border:       #e2e8ed;
+  --border-mid:   #d0dae2;
+  --bg:           #f4f6f8;
+  --bg-card:      #ffffff;
+  --bg-sidebar:   #0D1F2D;
+  --sidebar-w:    236px;
+  --topbar-h:     60px;
+  --radius:       6px;
+  --green:        #1a9e5c;
+  --green-bg:     #eaf7f0;
+  --red:          #d63b2f;
+  --red-bg:       #fdf0ee;
+  --blue:         #2b7dd4;
+  --blue-bg:      #edf4fd;
+  --orange:       #d97706;
+  --orange-bg:    #fef3e2;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: 'Roboto', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ══════════ SIDEBAR ══════════ */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg-sidebar);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  border-right: 1px solid rgba(0,0,0,0.10);
+}
+.sidebar-brand {
+  height: var(--topbar-h);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 5px;
+  background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem; letter-spacing: 0.06em;
+  color: var(--navy); flex-shrink: 0;
+}
+.brand-text { font-weight: 700; font-size: 1rem; letter-spacing: 0.16em; color: var(--gold); }
+.brand-sub  { font-size: 0.5rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-top: 1px; }
+
+.sidebar-scroll { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+.sidebar-scroll::-webkit-scrollbar { width: 0; }
+
+.sidebar-section {
+  padding: 18px 20px 5px;
+  font-size: 0.55rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+}
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 12px 8px 20px;
+  cursor: pointer; font-size: 0.72rem; font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  transition: all 0.15s; position: relative;
+  text-decoration: none; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(200,146,42,0.08); }
+.nav-icon { width: 13px; flex-shrink: 0; opacity: 0.6; }
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-badge {
+  margin-left: auto; font-size: 0.55rem; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px; min-width: 20px; text-align: center;
+}
+.nav-badge.amber { background: rgba(200,146,42,0.2); color: var(--gold); }
+.nav-badge.red   { background: rgba(214,59,47,0.2);  color: #e05a50; }
+
+.sidebar-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 12px 14px; flex-shrink: 0;
+}
+.investor-profile {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 6px; border-radius: var(--radius); cursor: pointer;
+  transition: background 0.15s;
+}
+.investor-profile:hover { background: rgba(255,255,255,0.05); }
+.investor-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.65rem; color: var(--navy);
+}
+.investor-name { font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.80); }
+.investor-role { font-size: 0.58rem; color: rgba(255,255,255,0.30); margin-top: 1px; }
+
+/* ══════════ MAIN ══════════ */
+.main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+
+.topbar {
+  height: var(--topbar-h);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 28px;
+  position: sticky; top: 0; z-index: 50;
+  flex-shrink: 0;
+}
+.topbar-title { font-size: 0.92rem; font-weight: 700; color: var(--text); }
+.topbar-crumb { font-size: 0.65rem; color: var(--text-faint); margin-top: 1px; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+.live-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  background: var(--green-bg); border: 1px solid rgba(26,158,92,0.2);
+  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--green);
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 1.4s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.icon-btn {
+  width: 32px; height: 32px; border-radius: var(--radius);
+  background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-muted); font-size: 0.85rem;
+  transition: all 0.15s; position: relative;
+}
+.icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+.notif-dot {
+  position: absolute; top: 4px; right: 4px; width: 7px; height: 7px;
+  border-radius: 50%; background: var(--gold); border: 2px solid var(--bg-card);
+}
+.period-select {
+  padding: 5px 10px; border: 1px solid var(--border); border-radius: var(--radius);
+  font-family: 'Roboto', sans-serif; font-size: 0.68rem; font-weight: 500;
+  color: var(--text-muted); background: var(--bg); cursor: pointer; outline: none;
+}
+.period-select:focus { border-color: var(--gold); }
+
+/* ══════════ CONTENT ══════════ */
+.content { padding: 22px 28px; flex: 1; }
+
+/* HERO BAND */
+.hero-band {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 22px 28px;
+  margin-bottom: 18px;
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.hero-band-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(120deg, rgba(200,146,42,0.07) 0%, transparent 55%);
+}
+.hero-band-bg::after {
+  content: 'ROI';
+  position: absolute; right: -10px; top: -20px;
+  font-weight: 900; font-size: 7rem; letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.025); pointer-events: none; line-height: 1;
+}
+.hero-greeting { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+.hero-name { font-size: 1.3rem; font-weight: 900; color: #fff; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 6px; }
+.hero-meta { font-size: 0.65rem; color: rgba(255,255,255,0.38); }
+.hero-tags { display: flex; gap: 6px; margin-top: 10px; }
+.hero-tag {
+  font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 3px;
+}
+.hero-tag.gold  { background: rgba(200,146,42,0.15); color: var(--gold); border: 1px solid rgba(200,146,42,0.25); }
+.hero-tag.green { background: rgba(26,158,92,0.15);  color: #27d47a;     border: 1px solid rgba(26,158,92,0.25); }
+.hero-tag.blue  { background: rgba(43,125,212,0.15); color: #5ba8f5;     border: 1px solid rgba(43,125,212,0.25); }
+
+.hero-right { display: flex; gap: 20px; flex-shrink: 0; }
+.hero-stat { text-align: right; }
+.hero-stat-label { font-size: 0.55rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.30); margin-bottom: 3px; }
+.hero-stat-value { font-size: 1.5rem; font-weight: 900; color: var(--gold); letter-spacing: -0.03em; line-height: 1; }
+.hero-stat-sub { font-size: 0.6rem; color: rgba(255,255,255,0.35); margin-top: 3px; }
+.hero-divider { width: 1px; background: rgba(255,255,255,0.08); align-self: stretch; }
+
+/* ══════════ KPI GRID ══════════ */
+.kpi-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 18px; }
+.kpi-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px 18px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  cursor: default;
+}
+.kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); border-color: var(--border-mid); }
+.kpi-card.highlight { border-color: rgba(200,146,42,0.3); background: var(--gold-bg); }
+.kpi-label {
+  font-size: 0.58rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 8px;
+}
+.kpi-value { font-size: 1.6rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
+.kpi-value em { color: var(--gold); font-style: normal; }
+.kpi-sub { margin-top: 6px; font-size: 0.63rem; color: var(--text-faint); display: flex; align-items: center; gap: 5px; }
+.kpi-change { font-weight: 600; }
+.kpi-change.up   { color: var(--green); }
+.kpi-change.down { color: var(--red); }
+.kpi-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.kpi-bar-fill { height: 100%; border-radius: 2px; background: var(--gold); transition: width 1s cubic-bezier(.16,1,.3,1); }
+
+/* ══════════ LAYOUT ══════════ */
+.grid-3   { display: grid; grid-template-columns: 1fr 1fr 300px; gap: 14px; margin-bottom: 14px; }
+.grid-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.grid-2b  { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 14px; }
+.col-span-2 { grid-column: span 2; }
+
+/* ══════════ PANELS ══════════ */
+.panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+}
+.panel-header {
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.panel-title { font-size: 0.75rem; font-weight: 700; color: var(--text); letter-spacing: 0.01em; }
+.panel-sub   { font-size: 0.6rem; color: var(--text-faint); margin-top: 2px; }
+.panel-action {
+  font-size: 0.62rem; font-weight: 600; color: var(--gold); cursor: pointer;
+  letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.85; transition: opacity 0.15s;
+}
+.panel-action:hover { opacity: 1; }
+
+/* TABS */
+.tab-row { display: flex; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 9px 16px; font-size: 0.63rem; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--text-faint); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s;
+}
+.tab:hover { color: var(--text-muted); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ══════════ CHART ══════════ */
+.chart-wrap { padding: 16px 20px 0; }
+.chart-legend { display: flex; gap: 16px; margin-bottom: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.62rem; color: var(--text-faint); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.chart-svg { width: 100%; overflow: visible; display: block; }
+
+/* SPARK ROW */
+.spark-row { display: flex; gap: 10px; padding: 14px 20px 16px; }
+.spark-item {
+  flex: 1; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px 12px;
+}
+.spark-label { font-size: 0.56rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 3px; }
+.spark-value { font-size: 1rem; font-weight: 700; color: var(--text); }
+.spark-change { font-size: 0.6rem; font-weight: 600; margin-top: 2px; }
+
+/* ══════════ TABLE ══════════ */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  padding: 9px 18px; text-align: left;
+  font-size: 0.56rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-faint); border-bottom: 1px solid var(--border);
+  background: var(--bg); white-space: nowrap;
+}
+tbody td {
+  padding: 10px 18px; font-size: 0.71rem; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bg); }
+.td-name { font-weight: 600; color: var(--text); }
+.td-flag { margin-right: 4px; }
+.amount-pos { color: var(--green); font-weight: 600; }
+.amount-neg { color: var(--red); font-weight: 600; }
+
+/* BADGES */
+.badge {
+  display: inline-block; font-size: 0.55rem; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 3px;
+}
+.badge-green  { background: var(--green-bg);  color: var(--green); }
+.badge-gold   { background: var(--gold-bg);   color: var(--gold); }
+.badge-blue   { background: var(--blue-bg);   color: var(--blue); }
+.badge-red    { background: var(--red-bg);    color: var(--red); }
+.badge-orange { background: var(--orange-bg); color: var(--orange); }
+.badge-grey   { background: var(--bg); color: var(--text-faint); border: 1px solid var(--border); }
+
+/* ══════════ PROGRESS ══════════ */
+.prog-list  { padding: 14px 20px; display: flex; flex-direction: column; gap: 13px; }
+.prog-head  { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.prog-label { font-size: 0.68rem; font-weight: 500; color: var(--text-muted); }
+.prog-pct   { font-size: 0.68rem; font-weight: 700; color: var(--text); }
+.prog-bar   { height: 4px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.prog-fill  { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(.16,1,.3,1); }
+
+/* ══════════ FAN DATA FEED ══════════ */
+.feed-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 18px; border-bottom: 1px solid var(--border);
+  transition: background 0.12s; cursor: pointer;
+}
+.feed-item:last-child { border-bottom: none; }
+.feed-item:hover { background: var(--bg); }
+.feed-icon {
+  width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px; font-size: 0.7rem;
+}
+.feed-text { font-size: 0.70rem; color: var(--text-muted); line-height: 1.45; flex: 1; }
+.feed-text strong { color: var(--text); font-weight: 600; }
+.feed-time { font-size: 0.58rem; color: var(--text-faint); margin-top: 3px; }
+.feed-amount { font-size: 0.72rem; font-weight: 700; color: var(--text); white-space: nowrap; margin-top: 2px; }
+
+/* ══════════ PARTNER STRIPS ══════════ */
+.partner-strip {
+  display: flex; gap: 12px; padding: 14px 20px;
+}
+.partner-card {
+  flex: 1; border: 1px solid var(--border); border-radius: 7px;
+  padding: 14px 16px; background: var(--bg);
+  transition: border-color 0.2s, background 0.2s;
+  cursor: default;
+}
+.partner-card:hover { border-color: var(--gold); background: var(--gold-bg); }
+.partner-logo-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.partner-logo {
+  width: 28px; height: 28px; border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 900; color: #fff; flex-shrink: 0;
+}
+.partner-name { font-size: 0.72rem; font-weight: 700; color: var(--text); }
+.partner-tier { font-size: 0.55rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; }
+.partner-stat-val { font-size: 1.1rem; font-weight: 700; color: var(--gold); line-height: 1; }
+.partner-stat-lbl { font-size: 0.58rem; color: var(--text-faint); margin-top: 2px; }
+
+/* ══════════ NATION GRID ══════════ */
+.nations-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 14px; }
+.nation-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 9px 11px;
+  transition: border-color 0.15s;
+}
+.nation-card:hover { border-color: var(--gold); }
+.nation-name  { font-size: 0.68rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.nation-spend { font-size: 0.6rem; color: var(--text-faint); margin-bottom: 5px; }
+.nation-bar   { height: 3px; background: var(--border-mid); border-radius: 2px; overflow: hidden; }
+.nation-fill  { height: 100%; background: var(--gold); border-radius: 2px; }
+
+/* ══════════ CONSENT INDICATOR ══════════ */
+.consent-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 18px; border-bottom: 1px solid var(--border); font-size: 0.70rem;
+}
+.consent-row:last-child { border-bottom: none; }
+.consent-label { color: var(--text-muted); }
+.consent-val { font-weight: 600; color: var(--text); }
+.consent-val.green { color: var(--green); }
+
+/* ══════════ SEGMENTATION ══════════ */
+.segment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px; }
+.segment-item {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 7px; padding: 12px 14px;
+}
+.segment-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 6px; }
+.segment-value { font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1; }
+.segment-sub   { font-size: 0.6rem; color: var(--text-faint); margin-top: 3px; }
+.segment-bar   { height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+.segment-fill  { height: 100%; border-radius: 2px; }
+
+/* ══════════ ALERT STRIP ══════════ */
+.alert-strip {
+  background: var(--gold-bg); border: 1px solid rgba(200,146,42,0.25);
+  border-radius: 8px; padding: 10px 16px;
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 18px;
+}
+.alert-tag {
+  font-size: 0.57rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold); background: rgba(200,146,42,0.15); padding: 3px 8px;
+  border-radius: 3px; flex-shrink: 0; margin-right: 14px;
+}
+.alert-item {
+  font-size: 0.67rem; color: var(--text-muted);
+  padding: 0 14px; border-left: 1px solid rgba(200,146,42,0.2);
+  flex-shrink: 0; line-height: 1.3;
+}
+.alert-item:first-of-type { border-left: none; padding-left: 0; }
+.alert-item strong { color: var(--text); font-weight: 600; }
+.alert-dismiss {
+  margin-left: auto; font-size: 0.65rem; color: var(--text-faint);
+  cursor: pointer; padding: 2px 6px; border-radius: 3px;
+  transition: background 0.15s;
+}
+.alert-dismiss:hover { background: rgba(200,146,42,0.12); color: var(--gold); }
+
+/* ══════════ BTN ══════════ */
+.btn {
+  padding: 7px 14px; border-radius: var(--radius); cursor: pointer;
+  font-family: 'Roboto', sans-serif; font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase; border: none; transition: all 0.15s;
+}
+.btn-primary { background: var(--gold); color: var(--navy); }
+.btn-primary:hover { background: var(--gold-light); }
+.btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+.btn-sm { padding: 5px 10px; font-size: 0.62rem; }
+
+/* SCROLL */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ SIDEBAR ══════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-mark">T</div>
+    <div>
+      <div class="brand-text">TALO</div>
+      <div class="brand-sub">Investor Portal</div>
+    </div>
+  </div>
+
+  <div class="sidebar-scroll">
+    <div class="sidebar-section">Overview</div>
+    <a class="nav-item active" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      ROI Dashboard
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Live Platform Data
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Fan Intelligence
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Commercial Returns <span class="nav-badge amber">3</span>
+    </a>
+
+    <div class="sidebar-section">AFCON 2027</div>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Tournament Tracker
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Ticket & Fan Data
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Partner Activations
+    </a>
+
+    <div class="sidebar-section">Portfolio</div>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      Athlete Portfolios
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Reports &amp; Exports
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Settings
+    </a>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="investor-profile">
+      <div class="investor-avatar">AB</div>
+      <div>
+        <div class="investor-name">Absa Sports Capital</div>
+        <div class="investor-role">Strategic Investor · Tier 1</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════════ MAIN ══════════════════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Investor ROI Dashboard</div>
+      <div class="topbar-crumb">TALO Platform · Investor Portal · Commercial Intelligence</div>
+    </div>
+    <div class="topbar-right">
+      <select class="period-select">
+        <option>Q2 2026 (Live)</option>
+        <option>Q1 2026</option>
+        <option>H2 2025</option>
+        <option>Full Year 2025</option>
+      </select>
+      <div class="live-pill"><div class="live-dot"></div> Live Data</div>
+      <div class="icon-btn" title="Export Report">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <div class="icon-btn" title="Notifications" style="position:relative;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ALERT -->
+    <div class="alert-strip">
+      <span class="alert-tag">AFCON 2027</span>
+      <span class="alert-item"><strong>Fan onboarding up 34%</strong> this week — 18,420 new verified fans across Nairobi, Dar es Salaam &amp; Kampala</span>
+      <span class="alert-item"><strong>Ticketsasa</strong> webhook integration live — real-time purchase data flowing</span>
+      <span class="alert-item"><strong>Diageo hospitality</strong> offer redemption rate: <strong>68%</strong> of eligible TALO athletes</span>
+      <span class="alert-dismiss">Dismiss ✕</span>
+    </div>
+
+    <!-- HERO BAND -->
+    <div class="hero-band">
+      <div class="hero-band-bg"></div>
+      <div style="position:relative; z-index:1;">
+        <div class="hero-greeting">Absa Sports Capital · Strategic Investor</div>
+        <div class="hero-name">Commercial Intelligence Overview</div>
+        <div class="hero-meta">AFCON 2027 activation window · Jan–Feb 2027 · 257 days to tournament</div>
+        <div class="hero-tags">
+          <span class="hero-tag gold">Tier 1 Access</span>
+          <span class="hero-tag green">Data Consent Active</span>
+          <span class="hero-tag blue">3 Partner APIs Live</span>
+        </div>
+      </div>
+      <div class="hero-right" style="position:relative; z-index:1;">
+        <div class="hero-stat">
+          <div class="hero-stat-label">Fans Onboarded</div>
+          <div class="hero-stat-value">247K</div>
+          <div class="hero-stat-sub">+34% WoW</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Platform GMV</div>
+          <div class="hero-stat-value">$4.2M</div>
+          <div class="hero-stat-sub">Q2 2026 to date</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Data ROI Index</div>
+          <div class="hero-stat-value">8.4×</div>
+          <div class="hero-stat-sub">vs. industry avg 2.1×</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI GRID -->
+    <div class="kpi-grid">
+      <div class="kpi-card highlight">
+        <div class="kpi-label">Verified Fan Profiles</div>
+        <div class="kpi-value"><em>247,310</em></div>
+        <div class="kpi-sub"><span class="kpi-change up">▲ 34%</span> vs last month</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:72%"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Fan Spend / Event</div>
+        <div class="kpi-value">KES <em>4,820</em></div>
+        <div class="kpi-sub"><span class="kpi-change up">▲ 18%</span> vs AFCON 2021 baseline</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:61%;background:var(--blue)"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Ticket Transactions Tracked</div>
+        <div class="kpi-value"><em>38,940</em></div>
+        <div class="kpi-sub"><span class="kpi-change up">▲ 22%</span> this quarter</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:55%;background:var(--green)"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Partner Offer Redemptions</div>
+        <div class="kpi-value"><em>12,480</em></div>
+        <div class="kpi-sub"><span class="kpi-change up">▲ 41%</span> MoM · Diageo leads</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:48%;background:#8e44ad"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active Athlete Profiles</div>
+        <div class="kpi-value"><em>3,841</em></div>
+        <div class="kpi-sub"><span class="kpi-change up">▲ 9%</span> new verified athletes</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:38%;background:var(--orange)"></div></div>
+      </div>
+    </div>
+
+    <!-- ROW 1: Revenue chart + Fan spend breakdown + Partner sidebar -->
+    <div class="grid-3">
+
+      <!-- Platform Revenue & Fan GMV chart -->
+      <div class="panel col-span-2" style="grid-column: span 2;">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Platform GMV & Fan Transaction Volume</div>
+            <div class="panel-sub">Aggregated across Mookh, Mtickets (via Tesh), and Ticketsasa integrations</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <div class="tab-row" style="border:none;gap:4px;">
+              <span class="tab active" style="border:1px solid var(--border);border-radius:4px;margin:0;padding:5px 10px;">GMV</span>
+              <span class="tab" style="border:1px solid var(--border);border-radius:4px;margin:0;padding:5px 10px;">Txns</span>
+              <span class="tab" style="border:1px solid var(--border);border-radius:4px;margin:0;padding:5px 10px;">Fans</span>
+            </div>
+            <span class="panel-action">Export CSV</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Fan Transactions (GMV)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Athlete Deal Flow</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Partner Redemptions</div>
+          </div>
+          <svg class="chart-svg" viewBox="0 0 560 160" style="height:160px;">
+            <defs>
+              <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--gold)" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="var(--gold)" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--blue)" stop-opacity="0.12"/>
+                <stop offset="100%" stop-color="var(--blue)" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--green)" stop-opacity="0.12"/>
+                <stop offset="100%" stop-color="var(--green)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid -->
+            <line x1="0" y1="130" x2="560" y2="130" stroke="var(--border)" stroke-width="1"/>
+            <line x1="0" y1="97"  x2="560" y2="97"  stroke="var(--border)" stroke-width="0.5" stroke-dasharray="4,4"/>
+            <line x1="0" y1="64"  x2="560" y2="64"  stroke="var(--border)" stroke-width="0.5" stroke-dasharray="4,4"/>
+            <line x1="0" y1="30"  x2="560" y2="30"  stroke="var(--border)" stroke-width="0.5" stroke-dasharray="4,4"/>
+            <!-- Y labels -->
+            <text x="0" y="134" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif">0</text>
+            <text x="0" y="100" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif">1M</text>
+            <text x="0" y="67"  font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif">2M</text>
+            <text x="0" y="33"  font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif">3M</text>
+            <!-- X labels -->
+            <text x="55"  y="145" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif" text-anchor="middle">Jan</text>
+            <text x="130" y="145" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif" text-anchor="middle">Feb</text>
+            <text x="205" y="145" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif" text-anchor="middle">Mar</text>
+            <text x="280" y="145" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif" text-anchor="middle">Apr</text>
+            <text x="355" y="145" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif" text-anchor="middle">May</text>
+            <text x="430" y="145" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif" text-anchor="middle">Jun</text>
+            <text x="505" y="145" font-size="9" fill="var(--text-faint)" font-family="Roboto,sans-serif" text-anchor="middle">Jul</text>
+            <!-- Gold area (GMV) -->
+            <path d="M55,112 L130,100 L205,92 L280,78 L355,62 L430,50 L505,38 L505,130 L55,130 Z" fill="url(#gGold)"/>
+            <path d="M55,112 L130,100 L205,92 L280,78 L355,62 L430,50 L505,38" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <circle cx="505" cy="38" r="4" fill="var(--gold)"/>
+            <!-- Blue area (athlete deals) -->
+            <path d="M55,120 L130,115 L205,108 L280,104 L355,95 L430,88 L505,80 L505,130 L55,130 Z" fill="url(#gBlue)"/>
+            <path d="M55,120 L130,115 L205,108 L280,104 L355,95 L430,88 L505,80" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5,3"/>
+            <!-- Green area (partner redemptions) -->
+            <path d="M55,126 L130,124 L205,120 L280,116 L355,110 L430,104 L505,96 L505,130 L55,130 Z" fill="url(#gGreen)"/>
+            <path d="M55,126 L130,124 L205,120 L280,116 L355,110 L430,104 L505,96" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="3,3"/>
+          </svg>
+        </div>
+        <div class="spark-row">
+          <div class="spark-item">
+            <div class="spark-label">Mookh GMV</div>
+            <div class="spark-value">$1.84M</div>
+            <div class="spark-change" style="color:var(--green)">▲ 28% QoQ</div>
+          </div>
+          <div class="spark-item">
+            <div class="spark-label">Mtickets / Tesh</div>
+            <div class="spark-value">$1.22M</div>
+            <div class="spark-change" style="color:var(--green)">▲ 19% QoQ</div>
+          </div>
+          <div class="spark-item">
+            <div class="spark-label">Ticketsasa</div>
+            <div class="spark-value">$1.14M</div>
+            <div class="spark-change" style="color:var(--green)">▲ 47% QoQ · New</div>
+          </div>
+          <div class="spark-item">
+            <div class="spark-label">Total Platform</div>
+            <div class="spark-value" style="color:var(--gold)">$4.20M</div>
+            <div class="spark-change" style="color:var(--green)">▲ 31% QoQ aggregate</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partner Performance sidebar -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Official Partner ROI</div>
+          <span class="panel-action">Details</span>
+        </div>
+        <div class="partner-strip" style="flex-direction:column; gap:8px;">
+          <div class="partner-card">
+            <div class="partner-logo-wrap">
+              <div class="partner-logo" style="background:#E61C24;">CC</div>
+              <div>
+                <div class="partner-name">Coca-Cola</div>
+                <div class="partner-tier">Official Beverage Partner</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px;">
+              <div>
+                <div class="partner-stat-val">142K</div>
+                <div class="partner-stat-lbl">Fan zone interactions</div>
+              </div>
+              <div>
+                <div class="partner-stat-val">38%</div>
+                <div class="partner-stat-lbl">Brand affinity lift</div>
+              </div>
+            </div>
+          </div>
+          <div class="partner-card">
+            <div class="partner-logo-wrap">
+              <div class="partner-logo" style="background:#B8963E;">DG</div>
+              <div>
+                <div class="partner-name">Diageo</div>
+                <div class="partner-tier">Official Hospitality Partner</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px;">
+              <div>
+                <div class="partner-stat-val">68%</div>
+                <div class="partner-stat-lbl">Athlete redemption rate</div>
+              </div>
+              <div>
+                <div class="partner-stat-val">$84K</div>
+                <div class="partner-stat-lbl">Hospitality value delivered</div>
+              </div>
+            </div>
+          </div>
+          <div class="partner-card">
+            <div class="partner-logo-wrap">
+              <div class="partner-logo" style="background:#2b7dd4;">HT</div>
+              <div>
+                <div class="partner-name">Hotel Network</div>
+                <div class="partner-tier">Official Accommodation Partner</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px;">
+              <div>
+                <div class="partner-stat-val">35%</div>
+                <div class="partner-stat-lbl">Avg rate discount</div>
+              </div>
+              <div>
+                <div class="partner-stat-val">1,240</div>
+                <div class="partner-stat-lbl">Room-nights booked</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Fan intelligence + Spend categories + Consent -->
+    <div class="grid-3">
+
+      <!-- Fan Intelligence feed -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Live Fan Data Feed</div>
+            <div class="panel-sub">Real-time purchase &amp; behaviour signals</div>
+          </div>
+          <div class="live-pill" style="font-size:0.55rem; padding:3px 8px;"><div class="live-dot"></div> Live</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--green-bg);color:var(--green);">🎟</div>
+          <div style="flex:1;">
+            <div class="feed-text"><strong>Fan #KE-48201</strong> purchased 2× AFCON group stage tickets via Ticketsasa — Nairobi, Jan 2027</div>
+            <div class="feed-time">Just now · M-Pesa · Verified fan</div>
+          </div>
+          <div class="feed-amount" style="color:var(--green);">KES 8,400</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--gold-bg);color:var(--gold);">🏨</div>
+          <div style="flex:1;">
+            <div class="feed-text"><strong>Fan #TZ-21084</strong> redeemed hotel partner rate at Hyatt Regency Dar es Salaam — 4 nights</div>
+            <div class="feed-time">3 min ago · Hotel Network API · Verified</div>
+          </div>
+          <div class="feed-amount" style="color:var(--gold);">$420 saved</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--blue-bg);color:var(--blue);">🥃</div>
+          <div style="flex:1;">
+            <div class="feed-text"><strong>Athlete #ATH-0082</strong> redeemed Diageo hospitality suite access — AFCON Semi-Final</div>
+            <div class="feed-time">7 min ago · Diageo API · Athlete verified</div>
+          </div>
+          <div class="feed-amount" style="color:var(--blue);">$840 value</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--green-bg);color:var(--green);">🎟</div>
+          <div style="flex:1;">
+            <div class="feed-text"><strong>Fan #UG-9204</strong> purchased 4× group stage tickets via Mookh — Kampala venue</div>
+            <div class="feed-time">12 min ago · MTN Mobile · Verified fan</div>
+          </div>
+          <div class="feed-amount" style="color:var(--green);">UGX 280K</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:rgba(200,146,42,0.12);color:var(--gold);">🥤</div>
+          <div style="flex:1;">
+            <div class="feed-text"><strong>142 fans</strong> engaged Coca-Cola fan zone activation at Kasarani Stadium pre-event</div>
+            <div class="feed-time">18 min ago · Coca-Cola API · Batch event</div>
+          </div>
+          <div class="feed-amount" style="color:var(--text-muted);">Batch</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-icon" style="background:var(--green-bg);color:var(--green);">🎟</div>
+          <div style="flex:1;">
+            <div class="feed-text"><strong>Fan #KE-31004</strong> upgraded to premium seating via Mtickets/Tesh — Nairobi Final venue</div>
+            <div class="feed-time">24 min ago · Card · Verified fan</div>
+          </div>
+          <div class="feed-amount" style="color:var(--green);">KES 22,000</div>
+        </div>
+      </div>
+
+      <!-- Fan spend categories -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Fan Spend Categories</div>
+          <span class="panel-action">Breakdown</span>
+        </div>
+        <div class="prog-list">
+          <div>
+            <div class="prog-head"><span class="prog-label">Ticket Purchases</span><span class="prog-pct">44%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:44%;background:var(--gold);"></div></div>
+          </div>
+          <div>
+            <div class="prog-head"><span class="prog-label">Accommodation (Hotel Network)</span><span class="prog-pct">22%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:22%;background:var(--blue);"></div></div>
+          </div>
+          <div>
+            <div class="prog-head"><span class="prog-label">Food &amp; Beverage (Coca-Cola, Diageo)</span><span class="prog-pct">18%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:18%;background:#8e44ad;"></div></div>
+          </div>
+          <div>
+            <div class="prog-head"><span class="prog-label">Merchandise &amp; Memorabilia</span><span class="prog-pct">11%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:11%;background:var(--green);"></div></div>
+          </div>
+          <div>
+            <div class="prog-head"><span class="prog-label">Transport &amp; Transfers</span><span class="prog-pct">5%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:5%;background:var(--border-mid);"></div></div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border); padding: 12px 20px;">
+          <div style="font-size:0.57rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:10px;">Avg Spend per Fan Profile</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div class="segment-item">
+              <div class="segment-label">Per Match Day</div>
+              <div class="segment-value">KES 4,820</div>
+              <div class="segment-sub">▲ 18% vs baseline</div>
+            </div>
+            <div class="segment-item">
+              <div class="segment-label">Per Tournament</div>
+              <div class="segment-value">KES 14,200</div>
+              <div class="segment-sub">Avg 2.9 matches attended</div>
+            </div>
+            <div class="segment-item">
+              <div class="segment-label">Digital Wallet Txns</div>
+              <div class="segment-value">3.4×</div>
+              <div class="segment-sub">Avg interactions / fan</div>
+            </div>
+            <div class="segment-item">
+              <div class="segment-label">Partner Offer Rate</div>
+              <div class="segment-value">61%</div>
+              <div class="segment-sub">Fans who redeemed ≥1 offer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data consent + source quality -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Data Quality &amp; Consent</div>
+          <span class="panel-action">Audit Log</span>
+        </div>
+        <div style="padding:14px 18px 10px; display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--green-bg);border:1px solid rgba(26,158,92,0.2);border-radius:6px;">
+            <div>
+              <div style="font-size:0.68rem;font-weight:700;color:var(--green);">POPIA / GDPR Compliant</div>
+              <div style="font-size:0.58rem;color:var(--text-faint);margin-top:2px;">All data capture consent-gated at registration</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="consent-row">
+          <span class="consent-label">Fans with data consent active</span>
+          <span class="consent-val green">247,310 (100%)</span>
+        </div>
+        <div class="consent-row">
+          <span class="consent-label">Partner data sharing opt-in</span>
+          <span class="consent-val green">189,240 (76.5%)</span>
+        </div>
+        <div class="consent-row">
+          <span class="consent-label">Verified real identities (KYC)</span>
+          <span class="consent-val">221,480 (89.5%)</span>
+        </div>
+        <div class="consent-row">
+          <span class="consent-label">Purchase history linked</span>
+          <span class="consent-val">38,940 transactions</span>
+        </div>
+        <div class="consent-row">
+          <span class="consent-label">Avg profile completeness</span>
+          <span class="consent-val">84%</span>
+        </div>
+
+        <div style="border-top:1px solid var(--border); padding:12px 18px;">
+          <div style="font-size:0.57rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:10px;">Ticketing API Sources</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:0.68rem;color:var(--text-muted);">Mookh</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-size:0.65rem;font-weight:600;color:var(--green);">Live</span>
+                <span style="font-size:0.65rem;color:var(--text-faint);">14,820 txns</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:0.68rem;color:var(--text-muted);">Mtickets via Tesh</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-size:0.65rem;font-weight:600;color:var(--green);">Live</span>
+                <span style="font-size:0.65rem;color:var(--text-faint);">12,100 txns</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:0.68rem;color:var(--text-muted);">Ticketsasa</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-size:0.65rem;font-weight:600;color:var(--green);">Live</span>
+                <span style="font-size:0.65rem;color:var(--text-faint);">12,020 txns</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 18px 16px;">
+          <button class="btn btn-primary" style="width:100%;margin-top:4px;">Download Full Data Report</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 3: Ticket transactions table + Fan geography + Segmentation -->
+    <div class="grid-2b">
+
+      <!-- Ticket transactions table -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Recent Ticket Purchase Events</div>
+            <div class="panel-sub">Fan purchase data captured across all 3 API integrations</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="badge badge-green">38,940 total</span>
+            <span class="panel-action">Full Table</span>
+          </div>
+        </div>
+        <div class="tab-row">
+          <span class="tab active">All Sources</span>
+          <span class="tab">Mookh</span>
+          <span class="tab">Mtickets</span>
+          <span class="tab">Ticketsasa</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fan ID</th>
+                <th>Event / Venue</th>
+                <th>Source API</th>
+                <th>Spend</th>
+                <th>Partner Offer</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-name"><span class="td-flag">🇰🇪</span>KE-48201</td>
+                <td>AFCON Group A · Nairobi</td>
+                <td><span class="badge badge-gold">Ticketsasa</span></td>
+                <td class="amount-pos">KES 8,400</td>
+                <td><span class="badge badge-blue">Hotel rate</span></td>
+                <td><span class="badge badge-green">Verified</span></td>
+              </tr>
+              <tr>
+                <td class="td-name"><span class="td-flag">🇹🇿</span>TZ-21084</td>
+                <td>AFCON Semi-Final · Dar es Salaam</td>
+                <td><span class="badge badge-gold">Mookh</span></td>
+                <td class="amount-pos">KES 22,000</td>
+                <td><span class="badge badge-orange">Diageo suite</span></td>
+                <td><span class="badge badge-green">Verified</span></td>
+              </tr>
+              <tr>
+                <td class="td-name"><span class="td-flag">🇺🇬</span>UG-9204</td>
+                <td>AFCON Group C · Kampala</td>
+                <td><span class="badge badge-blue">Mtickets/Tesh</span></td>
+                <td class="amount-pos">UGX 280K</td>
+                <td><span class="badge badge-grey">None</span></td>
+                <td><span class="badge badge-green">Verified</span></td>
+              </tr>
+              <tr>
+                <td class="td-name"><span class="td-flag">🇰🇪</span>KE-31004</td>
+                <td>AFCON Final · Nairobi</td>
+                <td><span class="badge badge-blue">Mtickets/Tesh</span></td>
+                <td class="amount-pos">KES 22,000</td>
+                <td><span class="badge badge-blue">Hotel rate</span></td>
+                <td><span class="badge badge-green">Verified</span></td>
+              </tr>
+              <tr>
+                <td class="td-name"><span class="td-flag">🇳🇬</span>NG-8820</td>
+                <td>AFCON Group B · Nairobi</td>
+                <td><span class="badge badge-gold">Ticketsasa</span></td>
+                <td class="amount-pos">KES 6,200</td>
+                <td><span class="badge badge-grey">None</span></td>
+                <td><span class="badge badge-orange">Pending KYC</span></td>
+              </tr>
+              <tr>
+                <td class="td-name"><span class="td-flag">🇰🇪</span>KE-50024</td>
+                <td>AFCON Quarter-Final · Nairobi</td>
+                <td><span class="badge badge-gold">Mookh</span></td>
+                <td class="amount-pos">KES 18,000</td>
+                <td><span class="badge badge-orange">Coca-Cola zone</span></td>
+                <td><span class="badge badge-green">Verified</span></td>
+              </tr>
+              <tr>
+                <td class="td-name"><span class="td-flag">🇬🇭</span>GH-4421</td>
+                <td>AFCON Group D · Kampala</td>
+                <td><span class="badge badge-blue">Mtickets/Tesh</span></td>
+                <td class="amount-pos">GHS 420</td>
+                <td><span class="badge badge-grey">None</span></td>
+                <td><span class="badge badge-green">Verified</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Fan Geography + Purchasing Habits -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Fan Geography</div>
+            <span class="panel-action">54 Markets</span>
+          </div>
+          <div class="nations-grid">
+            <div class="nation-card">
+              <div class="nation-name">🇰🇪 Kenya</div>
+              <div class="nation-spend">Avg KES 5,240 / fan</div>
+              <div class="nation-bar"><div class="nation-fill" style="width:92%"></div></div>
+            </div>
+            <div class="nation-card">
+              <div class="nation-name">🇹🇿 Tanzania</div>
+              <div class="nation-spend">Avg KES 4,820 / fan</div>
+              <div class="nation-bar"><div class="nation-fill" style="width:78%"></div></div>
+            </div>
+            <div class="nation-card">
+              <div class="nation-name">🇺🇬 Uganda</div>
+              <div class="nation-spend">Avg KES 4,100 / fan</div>
+              <div class="nation-bar"><div class="nation-fill" style="width:62%"></div></div>
+            </div>
+            <div class="nation-card">
+              <div class="nation-name">🇳🇬 Nigeria</div>
+              <div class="nation-spend">Avg KES 6,800 / fan</div>
+              <div class="nation-bar"><div class="nation-fill" style="width:55%"></div></div>
+            </div>
+            <div class="nation-card">
+              <div class="nation-name">🇬🇭 Ghana</div>
+              <div class="nation-spend">Avg KES 3,900 / fan</div>
+              <div class="nation-bar"><div class="nation-fill" style="width:40%"></div></div>
+            </div>
+            <div class="nation-card" style="background:var(--gold-bg);border-color:rgba(200,146,42,0.25);">
+              <div class="nation-name" style="color:var(--gold);">+49 Markets</div>
+              <div class="nation-spend" style="color:var(--gold);opacity:0.7;">Global fan base</div>
+              <div class="nation-bar"><div class="nation-fill" style="width:100%;opacity:0.4;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Fan Purchasing Habits</div>
+            <span class="panel-action">Segment View</span>
+          </div>
+          <div class="segment-grid">
+            <div class="segment-item">
+              <div class="segment-label">M-Pesa / Mobile</div>
+              <div class="segment-value">62%</div>
+              <div class="segment-sub">of all transactions</div>
+              <div class="segment-bar"><div class="segment-fill" style="width:62%;background:var(--green);"></div></div>
+            </div>
+            <div class="segment-item">
+              <div class="segment-label">Card / Bank</div>
+              <div class="segment-value">28%</div>
+              <div class="segment-sub">of all transactions</div>
+              <div class="segment-bar"><div class="segment-fill" style="width:28%;background:var(--blue);"></div></div>
+            </div>
+            <div class="segment-item">
+              <div class="segment-label">Repeat Purchasers</div>
+              <div class="segment-value">41%</div>
+              <div class="segment-sub">bought 2+ events</div>
+              <div class="segment-bar"><div class="segment-fill" style="width:41%;background:var(--gold);"></div></div>
+            </div>
+            <div class="segment-item">
+              <div class="segment-label">Premium Upgrades</div>
+              <div class="segment-value">18%</div>
+              <div class="segment-sub">upsold to VIP</div>
+              <div class="segment-bar"><div class="segment-fill" style="width:18%;background:#8e44ad;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+  // Nav active state
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault()
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+      item.classList.add('active')
+    })
+  })
+
+  // Tab switcher
+  document.querySelectorAll('.tab-row').forEach(row => {
+    row.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        row.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+        tab.classList.add('active')
+      })
+    })
+  })
+
+  // Animate progress bars
+  document.querySelectorAll('.prog-fill, .nation-fill, .segment-fill').forEach(bar => {
+    const w = bar.style.width
+    bar.style.width = '0'
+    requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = w }))
+  })
+
+  // Animate KPI bars
+  document.querySelectorAll('.kpi-bar-fill').forEach(bar => {
+    const w = bar.style.width
+    bar.style.width = '0'
+    setTimeout(() => { bar.style.transition = 'width 1s ease'; bar.style.width = w }, 200)
+  })
+
+  // Alert dismiss
+  document.querySelector('.alert-dismiss')?.addEventListener('click', function() {
+    const strip = this.closest('.alert-strip')
+    strip.style.transition = 'opacity 0.3s, max-height 0.4s 0.2s'
+    strip.style.opacity = '0'
+    strip.style.overflow = 'hidden'
+    setTimeout(() => { strip.style.maxHeight = '0'; strip.style.marginBottom = '0'; strip.style.padding = '0'; }, 200)
+    setTimeout(() => strip.remove(), 650)
+  })
+
+  // Live feed pulse (new items every 30s for demo)
+  let feedCount = 0
+  const feedEvents = [
+    { flag:'🇰🇪', id:'KE-52840', event:'AFCON Group B · Nairobi', source:'Ticketsasa', amount:'KES 7,200', type:'🎟', bg:'var(--green-bg)', color:'var(--green)', time:'Just now' },
+    { flag:'🇹🇿', id:'TZ-30012', event:'Diageo VIP Suite · Final', source:'Diageo API', amount:'$1,200 value', type:'🥃', bg:'var(--blue-bg)', color:'var(--blue)', time:'Just now' },
+  ]
+  setInterval(() => {
+    if (feedCount >= feedEvents.length) return
+    const ev = feedEvents[feedCount++]
+    const feed = document.querySelector('.feed-item')?.parentElement
+    if (!feed) return
+    const item = document.createElement('div')
+    item.className = 'feed-item'
+    item.style.cssText = 'background:rgba(200,146,42,0.04);opacity:0;transition:opacity 0.5s'
+    item.innerHTML = `
+      <div class="feed-icon" style="background:${ev.bg};color:${ev.color};">${ev.type}</div>
+      <div style="flex:1;">
+        <div class="feed-text"><strong>Fan #${ev.flag}${ev.id}</strong> purchased tickets for ${ev.event} via ${ev.source}</div>
+        <div class="feed-time">${ev.time} · Live feed</div>
+      </div>
+      <div class="feed-amount" style="color:${ev.color};">${ev.amount}</div>
+    `
+    feed.insertBefore(item, feed.firstChild)
+    requestAnimationFrame(() => requestAnimationFrame(() => { item.style.opacity = '1' }))
+    setTimeout(() => { item.style.background = '' }, 3000)
+  }, 18000)
+</script>
+</body>
+</html>

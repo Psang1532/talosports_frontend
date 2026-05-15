@@ -1,0 +1,448 @@
+/* src/features/sponsorship/sponsorship.module.css */
+
+/* ─── Shared layout ──────────────────────────────────────── */
+.sectionLabel {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--navy, #022258);
+  margin-bottom: 14px;
+}
+
+/* ─── Brand Strip ─────────────────────────────────────────── */
+.brandSection {
+  margin-bottom: 36px;
+}
+
+.brandStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.brandPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border, #e2e8f0);
+  background: var(--surface, #ffffff);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text, #1a2332);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.brandPill:hover {
+  border-color: var(--navy, #0f2d56);
+  box-shadow: 0 2px 8px rgba(15, 45, 86, 0.08);
+}
+
+.brandPillActive {
+  border-color: var(--navy, #0f2d56);
+  background: var(--navy-tint, #eef2f9);
+}
+
+.brandDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── Talent Ranking Table ────────────────────────────────── */
+.rankingSection {
+  margin-bottom: 36px;
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.filterSelect {
+  font-size: 13px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border, #e2e8f0);
+  background: var(--surface, #ffffff);
+  color: var(--text, #1a2332);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a9bb0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--navy, #0f2d56);
+}
+
+.verifiedLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary, #4a5568);
+  cursor: pointer;
+  user-select: none;
+}
+
+.verifiedLabel input {
+  accent-color: var(--navy, #0f2d56);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border: 1.5px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+}
+
+.rankTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+  min-width: 640px;
+}
+
+.rankTable th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light, #8a9bb0);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 12px 16px;
+  border-bottom: 1.5px solid var(--border, #e2e8f0);
+  background: var(--surface-raised, #f8fafc);
+}
+
+.thRank {
+  width: 44px;
+}
+
+.tableRow {
+  transition: background 0.12s;
+}
+
+.tableRow:hover {
+  background: var(--surface-hover, #f1f5f9);
+}
+
+.rankTable td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border-light, #f0f4f8);
+  vertical-align: middle;
+  color: var(--text, #1a2332);
+}
+
+.rankTable tr:last-child td {
+  border-bottom: none;
+}
+
+.tdRank {
+  font-size: 12px;
+  color: var(--text-light, #8a9bb0);
+  font-weight: 600;
+}
+
+.athleteName {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text, #1a2332);
+}
+
+.athleteRegion {
+  display: block;
+  font-size: 11px;
+  color: var(--text-light, #8a9bb0);
+  margin-top: 2px;
+}
+
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.tdSport {
+  font-size: 12px;
+  color: var(--text-secondary, #4a5568);
+}
+
+.engBarWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.engBarBg {
+  width: 80px;
+  height: 5px;
+  background: var(--border, #e2e8f0);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.engBarFill {
+  height: 5px;
+  background: var(--navy, #0f2d56);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.engPct {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary, #4a5568);
+}
+
+.statusPill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.statusFree {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.statusOpen {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.statusContracted {
+  background: var(--border, #e2e8f0);
+  color: var(--text-light, #8a9bb0);
+}
+
+.brandTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.brandTag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--surface-raised, #f8fafc);
+  color: var(--text-secondary, #4a5568);
+  border: 1px solid var(--border, #e2e8f0);
+  white-space: nowrap;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--text-light, #8a9bb0);
+  font-size: 13px;
+}
+
+/* ─── Open Deals Grid ─────────────────────────────────────── */
+.dealsSection {
+  margin-bottom: 36px;
+}
+
+.dealsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.dealCard {
+  background: var(--surface, #ffffff);
+  border: 1.5px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.dealCard:hover {
+  border-color: var(--navy, #0f2d56);
+  box-shadow: 0 4px 16px rgba(15, 45, 86, 0.08);
+}
+
+.dealCategory {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-light, #8a9bb0);
+  margin-bottom: 4px;
+}
+
+.dealBrand {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy, #0f2d56);
+  margin-bottom: 2px;
+}
+
+.dealTitle {
+  font-size: 13px;
+  color: var(--text-secondary, #4a5568);
+  margin-bottom: 16px;
+}
+
+.dealMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.dealMetaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.dealMetaRow dt {
+  color: var(--text-light, #8a9bb0);
+}
+
+.dealMetaRow dd {
+  font-weight: 600;
+  color: var(--text, #1a2332);
+  text-align: right;
+}
+
+.escrowBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-bottom: 14px;
+  width: fit-content;
+}
+
+.applyBtn {
+  width: 100%;
+  padding: 9px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy, #0f2d56);
+  background: transparent;
+  border: 1.5px solid var(--navy, #0f2d56);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  margin-top: auto;
+}
+
+.applyBtn:hover {
+  background: var(--navy, #0f2d56);
+  color: #ffffff;
+}
+
+/* ─── Financial Support ───────────────────────────────────── */
+.finSection {
+  margin-bottom: 60px;
+  margin-top: 40px;
+  padding: 1.24px
+}
+
+.finGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24;
+}
+
+.finCard {
+  background: var(--surface, #ffffff);
+  border: 1.5px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: box-shadow 0.15s;
+}
+
+.finCard:hover {
+  box-shadow: 0 4px 16px rgba(15, 45, 86, 0.07);
+}
+
+.finCardFeatured {
+  border-color: var(--navy, #0f2d56);
+}
+
+.finIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: var(--navy-tint, #eef2f9);
+  color: var(--navy, #0f2d56);
+  margin-bottom: 14px;
+}
+
+.finTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text, #1a2332);
+  margin-bottom: 6px;
+}
+
+.finDesc {
+  font-size: 13px;
+  color: var(--text-secondary, #4a5568);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.partnerBadge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 12px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.partnerPending {
+  background: #fef3c7;
+  color: #92400e;
+}
